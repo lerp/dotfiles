@@ -1,5 +1,7 @@
 " Disable vi compatibility
 set nocompatible
+filetype off
+syntax on
 
 " Highlight search matches as we type
 set incsearch
@@ -8,15 +10,15 @@ set incsearch
 set cursorcolumn
 set cursorline
 
-" Makes vim create an undo file so things can be undone between sessions!
-set undofile
+" Fix backspace in insert mode
+set backspace=indent,eol,start
 
 " Remap % to the tab key. It's just easier!
 nnoremap <tab> %
 vnoremap <tab> %
 
-" Mapping to select the previously pasted text
-nnoremap <leader>v V` ]
+" Remove Ex mode binding, I have no idea what it does and I keep hitting it :C
+nnoremap Q <Nop>
 
 " Makes tab completion like bash's
 set wildmode=list:longest
@@ -41,10 +43,26 @@ nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 
 " Windows style Cut, Copy & Paste
-map <C-X> "+x
-map <C-C> "+y
-map <C-V> "+gP
-map <C-A> ggvG$
+nnoremap <silent> <C-X> "+x
+nnoremap <silent> <C-C> "+y
+nnoremap <silent> <C-V> "+gP
+nnoremap <silent> <C-A> ggvG$
+nnoremap <silent> <C-Z> u
+nnoremap <silent> <C-S> :w<CR>
+
+" Other useful mappings
+" Select current block
+nnoremap <leader>f ^v$%
+
+" Save and build
+nnoremap <F5> :wa<CR>:make! run \| copen<CR>
+
+" Open vimrc
+nnoremap <leader>v :tabnew ~/dotfiles/vimrc<CR>
+
+" Cycle through tabs
+nnoremap <C-Q> gT
+nnoremap <C-E> gt
 
 " Map ; to : in normal mode just for easyness
 nnoremap ; :
@@ -62,15 +80,16 @@ set relativenumber
 set autochdir
 
 if has("gui_running")
-    colorscheme twilight
+    colorscheme jellybeans
     set guifont=Liberation\ Mono\ 9
-    set guioptions-=T "Hides the toolbar
-    set guioptions-=r "Hides the right scrollbar
+    set guioptions-=T
+    set guioptions-=m
+    set guioptions-=r
+    set guioptions-=e
+    set guioptions-=L
 endif
 
 if has("au")
-    filetype on
-
     au FileType c,h,hpp,cpp setlocal makeprg=make
     au FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
     au FileType makefile setlocal noexpandtab
@@ -80,10 +99,16 @@ if has("au")
     au FocusLost * :wa
 endif
 
-"execute pathogen#infect()
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
 
-" let g:clang_debug = 1
-let g:clang_complete_copen = 1
-let g:clang_use_library = 1
-let g:clang_library_path = '/usr/lib/'
-let g:clang_user_options = '|| exit 0'
+Bundle 'gmarik/vundle' 
+Bundle 'Valloric/YouCompleteMe'
+let g:ycm_confirm_extra_conf=0
+
+filetype plugin indent on
+
+call pathogen#infect()
+
+autocmd VimEnter * NERDTree 
+let NERDTreeChDirMode=1
