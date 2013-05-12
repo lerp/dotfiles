@@ -44,12 +44,13 @@ vnoremap <F1> <ESC>
 map <C-X> "+x
 map <C-C> "+y
 map <C-V> "+gP
+map <C-A> ggvG$
 
 " Map ; to : in normal mode just for easyness
 nnoremap ; :
 
 
-" Indent settings
+" Default indent settings
 set sw=4 sts=4 ts=4 expandtab
 set smarttab
 set autoindent
@@ -72,12 +73,14 @@ if has("au")
 
     au FileType c,h,hpp,cpp setlocal makeprg=make
     au FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
+    au FileType makefile setlocal noexpandtab
+    au FileType d setlocal makeprg=dmd\ %
 
     " Save all files when the window loses focus
     au FocusLost * :wa
 endif
 
-execute pathogen#infect()
+"execute pathogen#infect()
 
 " let g:clang_debug = 1
 let g:clang_complete_copen = 1
