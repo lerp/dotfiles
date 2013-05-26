@@ -71,9 +71,6 @@ nnoremap <leader>r :% s/
 " Open errors window
 nnoremap <silent> <leader>e :Errors<CR>
 
-" Map ; to : in normal mode just for easyness
-nnoremap ; :
-
 " Remap gf to open file in new tab
 nnoremap gf <C-W>gf
 
@@ -84,6 +81,9 @@ nnoremap <silent> <leader>O O<Esc>
 " Centers the screen on the matched search
 map n nzz
 map N Nzz
+
+" Easy save, out of habbit
+nnoremap <silent> <C-S> :w<CR>
 
 " Default indent settings
 set sw=4 sts=4 ts=4 expandtab
@@ -107,6 +107,9 @@ if has("gui_running")
     set guioptions-=r
     set guioptions-=e
     set guioptions-=L
+
+    hi CursorLine guibg=#2D2D2D
+    hi CursorColumn guibg=#2D2D2D
 endif
 
 set rtp+=~/.vim/bundle/vundle/
@@ -128,7 +131,7 @@ augroup NERDTreeCommands
 augroup END
 
 let NERDTreeChDirMode=1
-nnoremap <silent> <F2> :NERDTreeToggle<CR>
+nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 let g:syntastic_check_on_open=1
 
@@ -153,6 +156,8 @@ function! CppGuard()
     call setline(4, "#endif //" . s:defname)
 endfunction
 
+nnoremap <silent> <leader>gu :call CppGuard()<CR>
+
 function! SplitOther()
     let s:pairs = [ [ "h", "cpp" ], [ "vert", "frag" ] ]
     let s:fname = expand("%:p:r")
@@ -170,6 +175,7 @@ function! SplitOther()
     endfor
 
     exe "filetype" "detect"
+    exe "wincmd" "="
 endfunction 
 
 augroup FileCommands
@@ -178,6 +184,7 @@ augroup FileCommands
     autocmd FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
     autocmd FileType makefile setlocal noexpandtab
     autocmd FileType d setlocal makeprg=dmd\ %
+    autocmd FileType sh setlocal makeprg=./%
 
     " Save all files when the window loses focus
     autocmd FocusLost * :wa
@@ -185,5 +192,6 @@ augroup FileCommands
     autocmd! BufWritePost vimrc source %
     
     autocmd! BufRead * call SplitOther()
+    autocmd VimResized * exe "wincmd" "="
     autocmd BufNewFile *.h call CppGuard()
 augroup END
