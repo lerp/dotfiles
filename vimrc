@@ -79,8 +79,8 @@ nnoremap <silent> <leader>o o<Esc>
 nnoremap <silent> <leader>O O<Esc>
 
 " Centers the screen on the matched search
-map n nzz
-map N Nzz
+noremap n nzz
+noremap N Nzz
 
 " Easy save, out of habbit
 nnoremap <silent> <C-S> :w<CR>
@@ -117,6 +117,7 @@ call vundle#rc()
 
 Bundle 'gmarik/vundle' 
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'lerp/Jelp'
 let g:ycm_confirm_extra_conf=0
 
 filetype plugin indent on
@@ -134,6 +135,8 @@ let NERDTreeChDirMode=1
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 let g:syntastic_check_on_open=1
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11'
 
 function! OpenOther()
     exe "w"
@@ -145,7 +148,7 @@ function! OpenOther()
     endif
 endfunction
 
-nmap <silent> <F3> :call OpenOther()<CR>
+nnoremap <silent> <F3> :call OpenOther()<CR>
 
 function! CppGuard()
     let s:defname = "_" . toupper(expand("%:t:r")) . "_" . toupper(expand("%:e")) . "_"
@@ -180,11 +183,12 @@ endfunction
 
 augroup FileCommands
     autocmd!
-    autocmd FileType c,h,hpp,cpp setlocal makeprg=make
+    autocmd FileType h,cpp setlocal syntax=cpp11 makeprg=make
     autocmd FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
     autocmd FileType makefile setlocal noexpandtab
     autocmd FileType d setlocal makeprg=dmd\ %
     autocmd FileType sh setlocal makeprg=./%
+    autocmd FileType java noremap <buffer> <F5> :Java<CR>
 
     " Save all files when the window loses focus
     autocmd FocusLost * :wa
