@@ -51,7 +51,7 @@ set mouse=a
 set scrolloff=3
 
 " Make the editor effectively 80 columns wide
-set wrap
+set nowrap
 set textwidth=80
 let &colorcolumn = &textwidth + 1
 
@@ -248,7 +248,6 @@ augroup END
 " Highlight anything that goes over 81 columns
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
-
 
 " }}}
 
