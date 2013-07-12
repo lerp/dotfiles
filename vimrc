@@ -39,7 +39,7 @@ let mapleader = "-"
 let maplocalleader = "_"
 
 " Change indent settings
-set sw=4 sts=4 ts=4 expandtab
+set shiftwidth=4 softtabstop=4 tabstop=4 expandtab
 set smarttab
 set autoindent
 
@@ -205,19 +205,6 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11'
 " +------------------------------------------------------------------------------------------------+
 " {{{
 
-" A command for inserting a C guard macro
-function! CppGuard()
-    let s:defname = "_" . toupper(expand("%:t:r")) . "_" . toupper(expand("%:e")) . "_"
-
-    call setline(1, "#ifndef " . s:defname)
-    call setline(2, "#define " . s:defname)
-    call setline(3, "")
-    call setline(4, "#endif //" . s:defname)
-endfunction
-
-" Inserts a C guard macro
-nnoremap <silent> <leader>cg :call CppGuard()<CR>
-
 " The pairs used by SplitOther()
 let g:SplitPairs = [
 \   [ "h", "cpp" ],
@@ -248,24 +235,14 @@ endfunction
 augroup FileCommands
     autocmd!
 
-    " Set the make and indenting for different filetypes
-    autocmd FileType h,cpp setlocal syntax=cpp11 makeprg=make
-    autocmd FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
-    autocmd FileType makefile setlocal noexpandtab
-    autocmd FileType d setlocal makeprg=dmd\ %
-    autocmd FileType sh setlocal makeprg=./%
-
     " Change the title string to just the file name
     autocmd BufEnter * let &titlestring = expand("%:t")
 
-    " Reload the vimrc whenever it's saved
-    autocmd! BufWritePost vimrc source %
-    
     " Resize all split windows whenever vim is resized.
     autocmd VimResized * exe "wincmd" "="
 
-    autocmd! BufRead * call SplitOther()
-    autocmd BufNewFile *.h call CppGuard()
+    " Attempt to open the relative file for this file
+    autocmd BufRead * call SplitOther()
 augroup END
 
 " }}}
@@ -311,7 +288,61 @@ autocmd! FileType java call SetupJavaEnvironment()
 
 augroup filetype_vim
     autocmd!
+
+    " Enable folding for vim markers and automatically close all folds
     autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0
+
+    " Reload the vimrc whenever it's saved
+    autocmd! BufWritePost *vimrc source %
+augroup END
+
+" }}}
+
+" Lisp ----------------------------------------------------------------------------------------- {{{
+
+augroup filetype_lisp
+    autocmd!
+
+    " Set tab width and make program for lisp
+    autocmd FileType lisp setlocal tabstop=2 shiftwidth=2 softtabstop=2 makeprg=clisp\ %
+augroup END
+
+" }}}
+
+" C++ ------------------------------------------------------------------------------------------ {{{
+
+" A command for inserting a C guard macro
+function! CppGuard()
+    let defname = "_" . toupper(expand("%:t:r")) . "_" . toupper(expand("%:e")) . "_"
+
+    call setline(1, "#ifndef " . defname)
+    call setline(2, "#define " . defname)
+    call setline(3, "")
+    call setline(4, "#endif //" . defname)
+endfunction
+
+augroup filetype_cpp
+    autocmd!
+
+    " Set file syntax to C++11
+    autocmd FileType h,cpp setlocal syntax=cpp11 makeprg=make
+
+    " Use tabs instead of spaces in makefiles
+    autocmd FileType makefile setlocal noexpandtab
+
+    " Insert the Cpp Guard whenever a header file is opened
+    autocmd BufNewFile *.h call CppGuard()
+augroup END
+
+" }}}
+
+" Bash ----------------------------------------------------------------------------------------- {{{
+
+augroup filetype_bash
+    autocmd!
+
+    " Execute the file when in a sh file
+    autocmd FileType sh setlocal makeprg=./%
 augroup END
 
 " }}}
