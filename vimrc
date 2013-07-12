@@ -1,9 +1,21 @@
 " +------------------------------------------------------------------------------------------------+
 " |                                     Options Section                                            |
 " +------------------------------------------------------------------------------------------------+
+" {{{
+
 " Disable vi compatibility
 set nocompatible
+
+" Enable syntax highlighting
 syntax on
+
+" Enable status line
+set laststatus=2
+set statusline=%f
+set statusline+=%=
+set statusline+=%4l
+set statusline+=/
+set statusline+=%L
 
 " Highlight search matches as we type
 set incsearch
@@ -24,6 +36,7 @@ set wildmenu
 
 " Set the leader key
 let mapleader = "-"
+let maplocalleader = "_"
 
 " Change indent settings
 set sw=4 sts=4 ts=4 expandtab
@@ -33,6 +46,9 @@ set autoindent
 set autowrite
 set showcmd
 set mouse=a
+
+" Scroll when we're within 3 lines of the edge of the window
+set scrolloff=3
 
 " Make the editor effectively 100 columns wide
 set wrap
@@ -69,19 +85,16 @@ if has("gui_running")
 
 endif
 
+" }}}
+
 " +------------------------------------------------------------------------------------------------+
 " |                                     Mapping Section                                            |
 " +------------------------------------------------------------------------------------------------+
+" {{{
 
 " Remap % to the tab key. It's just easier!
 nnoremap <tab> %
 vnoremap <tab> %
-
-" Remove Ex mode binding, I have no idea what it does and I keep hitting it :C
-nnoremap Q <nop>
-
-" Scroll when we're within 3 lines of the edge of the window
-set scrolloff=3
 
 " Makes up and down more logical
 nnoremap <silent> k gk
@@ -90,21 +103,15 @@ inoremap <silent> <Up> <Esc>gka
 inoremap <silent> <Down> <Esc>gja
 
 " Goodbye help menu!
-inoremap <F1> <ESC>
-nnoremap <F1> <ESC>
-vnoremap <F1> <ESC>
+noremap <F1> <ESC>
 
-" Windows style Cut, Copy & Paste
+" Cut, Copy & Paste to clipboard
 vnoremap <silent> <leader>cu "+x
 vnoremap <silent> <leader>cp "+y
-nnoremap <silent> <leader>P "+gP
-nnoremap <silent> <leader>A ggvG$
+nnoremap <silent> <leader>p "+gP
 
-" Select current block
-nnoremap <silent> <leader>f ^v$%
-
-" Save and build
-nnoremap <silent> <F5> :wa<CR>:make! run<CR>
+" Select all
+nnoremap <silent> <leader>a ggvG$
 
 " Open vimrc
 nnoremap <silent> <leader>ev :vsplit ~/dotfiles/vimrc<CR>
@@ -118,12 +125,6 @@ nnoremap <silent> E :wincmd l<CR>
 " Create new tab
 nnoremap <silent> <C-t> :tabnew<CR>
 
-" Find and replace
-nnoremap <leader>r :%s/
-
-" Open errors window
-nnoremap <silent> <leader>e :Errors<CR>
-
 " Remap gf to open file in new tab
 nnoremap gf <C-W>gf
 
@@ -136,17 +137,24 @@ noremap n nzz
 noremap N Nzz
 
 " Easy save, out of habbit
-nnoremap <silent> <C-S> :w<CR>
+noremap <silent> <C-S> :w<CR>
 
 " Easier start of line & end of line
 nnoremap <leader>h ^
 nnoremap <leader>l $
 
+" Easier escaping
+inoremap jk <esc>l
+inoremap <esc> <nop>
+
+" }}}
+
 " +------------------------------------------------------------------------------------------------+
 " |                                     Plugins Section                                            |
 " +------------------------------------------------------------------------------------------------+
+" {{{
+" Vundle --------------------------------------------------------------------------------------- {{{
 
-" ===================================== Vundle section =============================================
 set nocompatible
 filetype off
 
@@ -160,13 +168,17 @@ Bundle 'lerp/Jelp'
 
 filetype plugin indent on
 
-" ===================================== Pathogen section ===========================================
+" }}}
+
+" Pathogen ------------------------------------------------------------------------------------- {{{
 
 if !exists("g:loaded_pathogen")
     call pathogen#infect()
 endif
 
-" ===================================== NERDTree section ===========================================
+" }}}
+
+" NERDTree ------------------------------------------------------------------------------------- {{{
 
 augroup NERDTreeCommands
     autocmd!
@@ -176,16 +188,22 @@ augroup END
 let NERDTreeChDirMode=1
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
-" ===================================== YCM and Syntastic section ==================================
+" }}}
+
+" YCM and Syntastic ---------------------------------------------------------------------------- {{{
 
 let g:ycm_confirm_extra_conf=0
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
 
+" }}}
+" }}}
+
 " +------------------------------------------------------------------------------------------------+
 " |                                     Custom Section                                             |
 " +------------------------------------------------------------------------------------------------+
+" {{{
 
 " A command for inserting a C guard macro
 function! CppGuard()
@@ -209,16 +227,16 @@ let g:SplitPairs = [
 " Opens a vertical split for relative files.
 " I.e. Opening myfile.h opens myfile.cpp.
 function! SplitOther()
-    let s:fname = expand("%:p:r")
+    let fname = expand("%:p:r")
 
-    for [s:left, s:right] in g:SplitPairs
-        if expand("%:e") == s:left
+    for [leftExt, rightExt] in g:SplitPairs
+        if expand("%:e") == leftExt
             set splitright
-            exe "vsplit" fnameescape(s:fname . "." . s:right) 
+            exe "vsplit" fnameescape(fname . "." . rightExt) 
             break
-        elseif expand("%:e") == s:right
+        elseif expand("%:e") == rightExt
             set nosplitright
-            exe "vsplit" fnameescape(s:fname . "." . s:left)
+            exe "vsplit" fnameescape(fname . "." . leftExt)
             break
         endif
     endfor
@@ -229,6 +247,7 @@ endfunction
 
 augroup FileCommands
     autocmd!
+
     " Set the make and indenting for different filetypes
     autocmd FileType h,cpp setlocal syntax=cpp11 makeprg=make
     autocmd FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
@@ -248,3 +267,53 @@ augroup FileCommands
     autocmd! BufRead * call SplitOther()
     autocmd BufNewFile *.h call CppGuard()
 augroup END
+
+" }}}
+
+" +------------------------------------------------------------------------------------------------+
+" |                                     Languages Section                                          |
+" |                                     =================                                          |
+" |                                                                                                |
+" | This section sets up common commands for different languages I work in. I try to have the      |
+" | commands listed below working for each language.                                               |
+" |                                                                                                |
+" |                                          Mappings                                              |
+" |                                     =================                                          |
+" |                                                                                                |
+" | <F5>               - Save and execute                                                          |
+" | <localleader>c     - Comment current line                                                      |
+" |                                                                                                |
+" |                                         Operators                                              |
+" |                                     =================                                          |
+" |                                                                                                |
+" | ib                 - Inner block                                                               |
+" | in(                - Inside next parenthesis                                                   |
+" | il(                - Inside last parenthesis                                                   |
+" |                                                                                                |
+" +------------------------------------------------------------------------------------------------+
+" {{{
+
+" Java ----------------------------------------------------------------------------------------- {{{
+
+function! SetupJavaEnvironment()
+    nnoremap <buffer> <F5> :wa<CR>:!mvn exec:java<cr>
+    nnoremap <buffer> <localleader>c 0i//<esc>
+    onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
+    onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
+    onoremap <buffer> il( :<c-u>normal! F)vi(<cr>
+endfunction
+
+autocmd! FileType java call SetupJavaEnvironment()
+
+" }}}
+
+" Vim ------------------------------------------------------------------------------------------ {{{
+
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0
+augroup END
+
+" }}}
+
+" }}}
