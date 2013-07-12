@@ -1,6 +1,9 @@
+" +-----------------------------------------------------------------------------------------------+
+" |                                     Options Section                                           |
+" +-----------------------------------------------------------------------------------------------+
 " Disable vi compatibility
 set nocompatible
-filetype off
+filetype plugin indent on
 syntax on
 
 " Highlight search matches as we type
@@ -16,16 +19,62 @@ set cursorline
 " Fix backspace in insert mode
 set backspace=indent,eol,start
 
+" Makes tab completion like bash's
+set wildmode=list:longest
+set wildmenu
+
+" Set the leader key
+let mapleader = "-"
+
+" Change indent settings
+set sw=4 sts=4 ts=4 expandtab
+set smarttab
+set autoindent
+
+set autowrite
+set showcmd
+set mouse=a
+
+" Relative numbers are so useful with commands like :m!
+set relativenumber
+
+" Automatically change to the working directory to the file's directory
+set autochdir
+
+" Stop the preview window from showing up
+set completeopt-=preview
+
+" Set the colour to jellybeans if it exists
+if filereadable("~/.vim/colors/jellybeans.vim")
+    colorscheme jellybeans
+endif
+
+" Make the cursor lines stick out a bit more
+hi CursorLine guibg=#2D2D2D
+hi CursorColumn guibg=#2D2D2D
+
+if has("gui_running")
+    set guifont=Liberation\ Mono\ 9
+
+    " Get rid of all the window deceration that comes with gvim
+    set guioptions-=T
+    set guioptions-=m
+    set guioptions-=r
+    set guioptions-=e
+    set guioptions-=L
+
+endif
+
+" +-----------------------------------------------------------------------------------------------+
+" |                                     Mapping Section                                           |
+" +-----------------------------------------------------------------------------------------------+
+
 " Remap % to the tab key. It's just easier!
 nnoremap <tab> %
 vnoremap <tab> %
 
 " Remove Ex mode binding, I have no idea what it does and I keep hitting it :C
 nnoremap Q <nop>
-
-" Makes tab completion like bash's
-set wildmode=list:longest
-set wildmenu
 
 " Scroll when we're within 3 lines of the edge of the window
 set scrolloff=3
@@ -54,7 +103,7 @@ nnoremap <silent> <leader>f ^v$%
 nnoremap <silent> <F5> :wa<CR>:make! run<CR>
 
 " Open vimrc
-nnoremap <silent> <leader>v :tabnew ~/dotfiles/vimrc<CR>
+nnoremap <silent> <leader>ev :vsplit ~/dotfiles/vimrc<CR>
 
 " Cycle through tabs
 nnoremap <silent> H :tabprevious<CR>
@@ -85,32 +134,9 @@ noremap N Nzz
 " Easy save, out of habbit
 nnoremap <silent> <C-S> :w<CR>
 
-" Default indent settings
-set sw=4 sts=4 ts=4 expandtab
-set smarttab
-set autoindent
-
-set autowrite
-set showcmd
-set mouse=a
-set relativenumber
-set autochdir
-
-" Stop the preview window from showing up
-set completeopt-=preview
-
-if has("gui_running")
-    colorscheme jellybeans
-    set guifont=Liberation\ Mono\ 9
-    set guioptions-=T
-    set guioptions-=m
-    set guioptions-=r
-    set guioptions-=e
-    set guioptions-=L
-
-    hi CursorLine guibg=#2D2D2D
-    hi CursorColumn guibg=#2D2D2D
-endif
+" +-----------------------------------------------------------------------------------------------+
+" |                                     Plugins Section                                           |
+" +-----------------------------------------------------------------------------------------------+
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -119,8 +145,6 @@ Bundle 'gmarik/vundle'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'lerp/Jelp'
 let g:ycm_confirm_extra_conf=0
-
-filetype plugin indent on
 
 if !exists("g:loaded_pathogen")
     call pathogen#infect()
@@ -138,18 +162,7 @@ let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
 
-function! OpenOther()
-    exe "w"
-
-    if expand("%:e") == "cpp"
-        exe "e" fnameescape(expand("%:p:r:s?src?include?").".h")
-    elseif expand("%:e") == "h"
-        exe "e" fnameescape(expand("%:p:r:s?include?src?").".cpp")
-    endif
-endfunction
-
-nnoremap <silent> <F3> :call OpenOther()<CR>
-
+" A command for inserting a C guard macro
 function! CppGuard()
     let s:defname = "_" . toupper(expand("%:t:r")) . "_" . toupper(expand("%:e")) . "_"
 
@@ -159,13 +172,21 @@ function! CppGuard()
     call setline(4, "#endif //" . s:defname)
 endfunction
 
-nnoremap <silent> <leader>gu :call CppGuard()<CR>
+" Inserts a C guard macro
+nnoremap <silent> <leader>cg :call CppGuard()<CR>
 
+" The pairs used by SplitOther()
+let g:SplitPairs = [
+\   [ "h", "cpp" ],
+\   [ "vert", "frag" ],
+\ ]
+
+" Opens a vertical split for relative files.
+" I.e. Opening myfile.h opens myfile.cpp.
 function! SplitOther()
-    let s:pairs = [ [ "h", "cpp" ], [ "vert", "frag" ] ]
     let s:fname = expand("%:p:r")
 
-    for [s:left, s:right] in s:pairs
+    for [s:left, s:right] in g:SplitPairs
         if expand("%:e") == s:left
             set splitright
             exe "vsplit" fnameescape(s:fname . "." . s:right) 
@@ -183,19 +204,22 @@ endfunction
 
 augroup FileCommands
     autocmd!
+    " Set the make and indenting for different filetypes
     autocmd FileType h,cpp setlocal syntax=cpp11 makeprg=make
     autocmd FileType lisp setlocal ts=2 sw=2 sts=2 makeprg=clisp\ %
     autocmd FileType makefile setlocal noexpandtab
     autocmd FileType d setlocal makeprg=dmd\ %
     autocmd FileType sh setlocal makeprg=./%
-    autocmd FileType java noremap <buffer> <F5> :Java<CR>
 
-    " Save all files when the window loses focus
-    autocmd FocusLost * :wa
+    " Change the title string to just the file name
     autocmd BufEnter * let &titlestring = expand("%:t")
+
+    " Reload the vimrc whenever it's saved
     autocmd! BufWritePost vimrc source %
     
-    autocmd! BufRead * call SplitOther()
+    " Resize all split windows whenever vim is resized.
     autocmd VimResized * exe "wincmd" "="
+
+    autocmd! BufRead * call SplitOther()
     autocmd BufNewFile *.h call CppGuard()
 augroup END
