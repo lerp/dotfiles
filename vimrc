@@ -119,7 +119,7 @@ nnoremap <silent> E :wincmd l<CR>
 nnoremap <silent> <C-t> :tabnew<CR>
 
 " Find and replace
-nnoremap <leader>r :% s/
+nnoremap <leader>r :%s/
 
 " Open errors window
 nnoremap <silent> <leader>e :Errors<CR>
@@ -137,6 +137,10 @@ noremap N Nzz
 
 " Easy save, out of habbit
 nnoremap <silent> <C-S> :w<CR>
+
+" Easier start of line & end of line
+nnoremap <leader>h ^
+nnoremap <leader>l $
 
 " +------------------------------------------------------------------------------------------------+
 " |                                     Plugins Section                                            |
