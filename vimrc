@@ -1,6 +1,6 @@
-" +------------------------------------------------------------------------------------------------+
-" |                                     Options Section                                            |
-" +------------------------------------------------------------------------------------------------+
+" +----------------------------------------------------------------------------+
+" |                             Options Section                                |
+" +----------------------------------------------------------------------------+
 " {{{
 
 " Disable vi compatibility
@@ -50,10 +50,10 @@ set mouse=a
 " Scroll when we're within 3 lines of the edge of the window
 set scrolloff=3
 
-" Make the editor effectively 100 columns wide
+" Make the editor effectively 80 columns wide
 set wrap
-set textwidth=100
-set colorcolumn=101
+set textwidth=80
+let &colorcolumn = &textwidth + 1
 
 " Relative numbers are so useful with commands like :m!
 set relativenumber
@@ -87,9 +87,9 @@ endif
 
 " }}}
 
-" +------------------------------------------------------------------------------------------------+
-" |                                     Mapping Section                                            |
-" +------------------------------------------------------------------------------------------------+
+" +----------------------------------------------------------------------------+
+" |                             Mapping Section                                |
+" +----------------------------------------------------------------------------+
 " {{{
 
 " Remap % to the tab key. It's just easier!
@@ -149,11 +149,11 @@ inoremap <esc> <nop>
 
 " }}}
 
-" +------------------------------------------------------------------------------------------------+
-" |                                     Plugins Section                                            |
-" +------------------------------------------------------------------------------------------------+
+" +----------------------------------------------------------------------------+
+" |                             Plugins Section                                |
+" +----------------------------------------------------------------------------+
 " {{{
-" Vundle --------------------------------------------------------------------------------------- {{{
+" Vundle ------------------------------------------------------------------- {{{
 
 set nocompatible
 filetype off
@@ -170,7 +170,7 @@ filetype plugin indent on
 
 " }}}
 
-" Pathogen ------------------------------------------------------------------------------------- {{{
+" Pathogen ----------------------------------------------------------------- {{{
 
 if !exists("g:loaded_pathogen")
     call pathogen#infect()
@@ -178,7 +178,7 @@ endif
 
 " }}}
 
-" NERDTree ------------------------------------------------------------------------------------- {{{
+" NERDTree ----------------------------------------------------------------- {{{
 
 augroup NERDTreeCommands
     autocmd!
@@ -190,7 +190,7 @@ nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 " }}}
 
-" YCM and Syntastic ---------------------------------------------------------------------------- {{{
+" YCM and Syntastic -------------------------------------------------------- {{{
 
 let g:ycm_confirm_extra_conf=0
 let g:syntastic_check_on_open=1
@@ -200,9 +200,9 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11'
 " }}}
 " }}}
 
-" +------------------------------------------------------------------------------------------------+
-" |                                     Custom Section                                             |
-" +------------------------------------------------------------------------------------------------+
+" +----------------------------------------------------------------------------+
+" |                             Custom Section                                 |
+" +----------------------------------------------------------------------------+
 " {{{
 
 " The pairs used by SplitOther()
@@ -247,30 +247,30 @@ augroup END
 
 " }}}
 
-" +------------------------------------------------------------------------------------------------+
-" |                                     Languages Section                                          |
-" |                                     =================                                          |
-" |                                                                                                |
-" | This section sets up common commands for different languages I work in. I try to have the      |
-" | commands listed below working for each language.                                               |
-" |                                                                                                |
-" |                                          Mappings                                              |
-" |                                     =================                                          |
-" |                                                                                                |
-" | <F5>               - Save and execute                                                          |
-" | <localleader>c     - Comment current line                                                      |
-" |                                                                                                |
-" |                                         Operators                                              |
-" |                                     =================                                          |
-" |                                                                                                |
-" | ib                 - Inner block                                                               |
-" | in(                - Inside next parenthesis                                                   |
-" | il(                - Inside last parenthesis                                                   |
-" |                                                                                                |
-" +------------------------------------------------------------------------------------------------+
+" +----------------------------------------------------------------------------+
+" |                             Languages Section                              |
+" |                             =================                              |
+" |                                                                            |
+" | This section sets up common commands for different languages I work in. I  |
+" | try to have the commands listed below working for each language.           |
+" |                                                                            |
+" |                                  Mappings                                  |
+" |                             =================                              |
+" |                                                                            |
+" | <F5>               - Save and execute                                      |
+" | <localleader>c     - Comment current line                                  |
+" |                                                                            |
+" |                                 Operators                                  |
+" |                             =================                              |
+" |                                                                            |
+" | ib                 - Inner block                                           |
+" | in(                - Inside next parenthesis                               |
+" | il(                - Inside last parenthesis                               |
+" |                                                                            |
+" +----------------------------------------------------------------------------+
 " {{{
 
-" Java ----------------------------------------------------------------------------------------- {{{
+" Java --------------------------------------------------------------------- {{{
 
 function! SetupJavaEnvironment()
     nnoremap <buffer> <F5> :wa<CR>:!mvn exec:java<cr>
@@ -284,7 +284,7 @@ autocmd! FileType java call SetupJavaEnvironment()
 
 " }}}
 
-" Vim ------------------------------------------------------------------------------------------ {{{
+" Vim ---------------------------------------------------------------------- {{{
 
 augroup filetype_vim
     autocmd!
@@ -298,22 +298,24 @@ augroup END
 
 " }}}
 
-" Lisp ----------------------------------------------------------------------------------------- {{{
+" Lisp --------------------------------------------------------------------- {{{
 
 augroup filetype_lisp
     autocmd!
 
     " Set tab width and make program for lisp
-    autocmd FileType lisp setlocal tabstop=2 shiftwidth=2 softtabstop=2 makeprg=clisp\ %
+    autocmd FileType lisp setlocal tabstop=2 shiftwidth=2 softtabstop=2
+\                                  makeprg=clisp\ %
 augroup END
 
 " }}}
 
-" C++ ------------------------------------------------------------------------------------------ {{{
+" C++ ---------------------------------------------------------------------- {{{
 
 " A command for inserting a C guard macro
 function! CppGuard()
-    let defname = "_" . toupper(expand("%:t:r")) . "_" . toupper(expand("%:e")) . "_"
+    let defname = "_" . toupper(expand("%:t:r")) . 
+\                 "_" . toupper(expand("%:e")) . "_"
 
     call setline(1, "#ifndef " . defname)
     call setline(2, "#define " . defname)
@@ -336,7 +338,7 @@ augroup END
 
 " }}}
 
-" Bash ----------------------------------------------------------------------------------------- {{{
+" Bash --------------------------------------------------------------------- {{{
 
 augroup filetype_bash
     autocmd!
