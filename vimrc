@@ -1,9 +1,8 @@
-" +-----------------------------------------------------------------------------------------------+
-" |                                     Options Section                                           |
-" +-----------------------------------------------------------------------------------------------+
+" +------------------------------------------------------------------------------------------------+
+" |                                     Options Section                                            |
+" +------------------------------------------------------------------------------------------------+
 " Disable vi compatibility
 set nocompatible
-filetype plugin indent on
 syntax on
 
 " Highlight search matches as we type
@@ -35,6 +34,11 @@ set autowrite
 set showcmd
 set mouse=a
 
+" Make the editor effectively 100 columns wide
+set wrap
+set textwidth=100
+set colorcolumn=101
+
 " Relative numbers are so useful with commands like :m!
 set relativenumber
 
@@ -65,9 +69,9 @@ if has("gui_running")
 
 endif
 
-" +-----------------------------------------------------------------------------------------------+
-" |                                     Mapping Section                                           |
-" +-----------------------------------------------------------------------------------------------+
+" +------------------------------------------------------------------------------------------------+
+" |                                     Mapping Section                                            |
+" +------------------------------------------------------------------------------------------------+
 
 " Remap % to the tab key. It's just easier!
 nnoremap <tab> %
@@ -134,21 +138,31 @@ noremap N Nzz
 " Easy save, out of habbit
 nnoremap <silent> <C-S> :w<CR>
 
-" +-----------------------------------------------------------------------------------------------+
-" |                                     Plugins Section                                           |
-" +-----------------------------------------------------------------------------------------------+
+" +------------------------------------------------------------------------------------------------+
+" |                                     Plugins Section                                            |
+" +------------------------------------------------------------------------------------------------+
+
+" ===================================== Vundle section =============================================
+set nocompatible
+filetype off
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle' 
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'tpope/vim-pathogen'
 Bundle 'lerp/Jelp'
-let g:ycm_confirm_extra_conf=0
+
+filetype plugin indent on
+
+" ===================================== Pathogen section ===========================================
 
 if !exists("g:loaded_pathogen")
     call pathogen#infect()
 endif
+
+" ===================================== NERDTree section ===========================================
 
 augroup NERDTreeCommands
     autocmd!
@@ -158,9 +172,16 @@ augroup END
 let NERDTreeChDirMode=1
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
+" ===================================== YCM and Syntastic section ==================================
+
+let g:ycm_confirm_extra_conf=0
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
+
+" +------------------------------------------------------------------------------------------------+
+" |                                     Custom Section                                             |
+" +------------------------------------------------------------------------------------------------+
 
 " A command for inserting a C guard macro
 function! CppGuard()
