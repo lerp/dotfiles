@@ -70,7 +70,7 @@ if filereadable($HOME . "/.vim/colors/jellybeans.vim")
 
     " Highlight anything that goes over 81 columns
     highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-    match OverLength /\%81v.\+/
+    match OverLength /\%>81v.\+/
 endif
 
 " Make the cursor lines stick out a bit more
@@ -241,6 +241,16 @@ function! SplitOther()
     exe "filetype" "detect"
     exe "wincmd" "="
 endfunction 
+
+function! FoldColumnToggle()
+    if &foldcolumn
+        setlocal foldcolumn=0
+    else
+        setlocal foldcolumn=4
+    endif
+endfunction
+
+nnoremap <silent> <leader>f :call FoldColumnToggle()<cr>
 
 augroup FileCommands
     autocmd!
