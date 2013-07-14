@@ -23,29 +23,46 @@ set incsearch
 " Remove the buffer when a file is closed
 set nohidden
 
-" Highlight the cursor column and line
-set cursorcolumn
-set cursorline
-
 " Fix backspace in insert mode
 set backspace=indent,eol,start
 
 " Makes tab completion like bash's
-set wildmode=list:longest
 set wildmenu
+set wildmode=list:longest
+
+set wildignore+=*.sw?   " Ignore swp files
 
 " Set the leader key
 let mapleader = "-"
 let maplocalleader = "_"
 
 " Change indent settings
-set shiftwidth=4 softtabstop=4 tabstop=4 expandtab
+set shiftwidth=4 softtabstop=4 tabstop=8 expandtab
 set smarttab
 set autoindent
+set formatoptions=qrcnj1
 
 set autowrite
 set showcmd
 set mouse=a
+
+" Enable back ups
+set backup
+set noswapfile  " Swap files are annoying
+
+set undodir=~/.vim/tmp/undo//
+set backupdir=~/.vim/tmp/backup//
+set directory=~/.vim/tmp/swap//
+
+if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+endif
+if !isdirectory(expand(&backupdir))
+    call mkdir(expand(&backupdir), "p")
+endif
+if !isdirectory(expand(&directory))
+    call mkdir(expand(&directory), "p")
+endif
 
 " Scroll when we're within 3 lines of the edge of the window
 set scrolloff=3
@@ -53,7 +70,7 @@ set scrolloff=3
 " Make the editor effectively 80 columns wide
 set nowrap
 set textwidth=80
-let &colorcolumn = &textwidth + 1
+set colorcolumn=+1
 
 " Relative numbers are so useful with commands like :m!
 set relativenumber
@@ -72,10 +89,6 @@ if filereadable($HOME . "/.vim/colors/jellybeans.vim")
     highlight OverLength ctermbg=red ctermfg=white guibg=#592929
     match OverLength /\%>81v.\+/
 endif
-
-" Make the cursor lines stick out a bit more
-hi CursorLine guibg=#2D2D2D
-hi CursorColumn guibg=#2D2D2D
 
 if has("gui_running")
     set guifont=Liberation\ Mono\ 9
@@ -112,7 +125,7 @@ noremap <F1> <ESC>
 " Cut, Copy & Paste to clipboard
 vnoremap <silent> <leader>cu "+x
 vnoremap <silent> <leader>cp "+y
-nnoremap <silent> <leader>p "+gP
+nnoremap <silent> <leader>p :silent! set paste<CR>"+gP:set nopaste<CR>
 
 " Select all
 nnoremap <silent> <leader>a ggvG$
@@ -121,10 +134,10 @@ nnoremap <silent> <leader>a ggvG$
 nnoremap <silent> <leader>ev :vsplit ~/dotfiles/vimrc<CR>
 
 " Cycle through tabs
-nnoremap <silent> H :tabprevious<CR>
-nnoremap <silent> Q :wincmd h<CR>
-nnoremap <silent> L :tabnext<CR>
-nnoremap <silent> E :wincmd l<CR>
+nnoremap <silent> H :tabprevious<CR>:silent! DoPulse<CR>
+nnoremap <silent> Q :wincmd h<CR>:silent! DoPulse<CR>
+nnoremap <silent> L :tabnext<CR>:silent! DoPulse<CR>
+nnoremap <silent> E :wincmd l<CR>:silent! DoPulse<CR>
 
 " Create new tab
 nnoremap <silent> <C-t> :tabnew<CR>
@@ -137,8 +150,8 @@ nnoremap <silent> <leader>o o<Esc>
 nnoremap <silent> <leader>O O<Esc>
 
 " Centers the screen on the matched search
-noremap n nzz
-noremap N Nzz
+noremap n nzz:silent! DoPulse<CR>
+noremap N Nzz:silent! DoPulse<CR>
 
 " Easy save, out of habbit
 noremap <silent> <C-S> :w<CR>
@@ -157,6 +170,13 @@ nnoremap ? ?\v
 vnoremap / /\v
 vnoremap ? ?\v
 
+" Clean trailing whitespace
+nnoremap <leader>cw mz:%s/\s\+$//<cr>:let @/=''<cr>`z
+
+" Space to toggle folds
+nnoremap <Space> za
+vnoremap <Space> za
+
 " }}}
 
 " +----------------------------------------------------------------------------+
@@ -171,9 +191,13 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-Bundle 'gmarik/vundle' 
+Bundle 'gmarik/vundle'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'tpope/vim-pathogen'
+Bundle 'tpope/vim-fugitive'
+Bundle 'scrooloose/syntastic'
+Bundle 'scrooloose/nerdtree'
+Bundle 'lerp/linepulse'
 
 filetype plugin indent on
 
@@ -191,7 +215,7 @@ endif
 
 augroup NERDTreeCommands
     autocmd!
-    autocmd VimEnter * NERDTree 
+    autocmd VimEnter * NERDTree
 augroup END
 
 let NERDTreeChDirMode=1
@@ -205,8 +229,19 @@ let g:ycm_confirm_extra_conf=0
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
+let g:syntastic_java_checker = 'javac'
 
 " }}}
+
+" LinePulse ---------------------------------------------------------------- {{{
+
+let g:linepulse_start = "guibg"
+let g:linepulse_end   = "#606060"
+let g:linepulse_steps = 30
+let g:linepulse_time  = 100
+
+" }}}
+
 " }}}
 
 " +----------------------------------------------------------------------------+
@@ -228,7 +263,7 @@ function! SplitOther()
     for [leftExt, rightExt] in g:SplitPairs
         if expand("%:e") == leftExt
             set splitright
-            exe "vsplit" fnameescape(fname . "." . rightExt) 
+            exe "vsplit" fnameescape(fname . "." . rightExt)
             break
         elseif expand("%:e") == rightExt
             set nosplitright
@@ -239,7 +274,7 @@ function! SplitOther()
 
     exe "filetype" "detect"
     exe "wincmd" "="
-endfunction 
+endfunction
 
 " Show the folding column
 function! FoldColumnToggle()
@@ -308,7 +343,15 @@ function! SetupJavaEnvironment()
     onoremap <buffer> il( :<c-u>normal! F)vi(<cr>
 endfunction
 
-autocmd! FileType java call SetupJavaEnvironment()
+augroup filetype_java
+    autocmd!
+
+    " Set up mappings
+    autocmd FileType java call SetupJavaEnvironment()
+
+    " Enable folding
+    autocmd FileType java setlocal foldmethod=marker foldmarker={,}
+augroup END
 
 " }}}
 
@@ -342,7 +385,7 @@ augroup END
 
 " A command for inserting a C guard macro
 function! CppGuard()
-    let defname = "_" . toupper(expand("%:t:r")) . 
+    let defname = "_" . toupper(expand("%:t:r")) .
 \                 "_" . toupper(expand("%:e")) . "_"
 
     call setline(1, "#ifndef " . defname)
@@ -362,6 +405,8 @@ augroup filetype_cpp
 
     " Insert the Cpp Guard whenever a header file is opened
     autocmd BufNewFile *.h call CppGuard()
+
+    autocmd FileType h,cpp setlocal foldmethod=marker foldmarker={,}
 augroup END
 
 " }}}
