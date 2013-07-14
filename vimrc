@@ -151,6 +151,12 @@ nnoremap <leader>l $
 inoremap jk <esc>l
 inoremap <esc> <nop>
 
+" Always do a very magic search
+nnoremap / /\v
+nnoremap ? ?\v
+vnoremap / /\v
+vnoremap ? ?\v
+
 " }}}
 
 " +----------------------------------------------------------------------------+
