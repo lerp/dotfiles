@@ -174,7 +174,6 @@ call vundle#rc()
 Bundle 'gmarik/vundle' 
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'tpope/vim-pathogen'
-Bundle 'lerp/Jelp'
 
 filetype plugin indent on
 
@@ -242,6 +241,7 @@ function! SplitOther()
     exe "wincmd" "="
 endfunction 
 
+" Show the folding column
 function! FoldColumnToggle()
     if &foldcolumn
         setlocal foldcolumn=0
@@ -250,7 +250,15 @@ function! FoldColumnToggle()
     endif
 endfunction
 
-nnoremap <silent> <leader>f :call FoldColumnToggle()<cr>
+nnoremap <leader>f :call FoldColumnToggle()<cr>
+
+" Make all parent directorys and save the file
+function! DirectorySave()
+    call mkdir(expand('%:h'), 'p')
+    write
+endfunction
+
+nnoremap <leader>w :call DirectorySave()<cr>
 
 augroup FileCommands
     autocmd!
