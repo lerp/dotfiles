@@ -65,8 +65,12 @@ set autochdir
 set completeopt-=preview
 
 " Set the colour to jellybeans if it exists
-if filereadable("~/.vim/colors/jellybeans.vim")
+if filereadable($HOME . "/.vim/colors/jellybeans.vim")
     colorscheme jellybeans
+
+    " Highlight anything that goes over 81 columns
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+    match OverLength /\%81v.\+/
 endif
 
 " Make the cursor lines stick out a bit more
@@ -244,10 +248,6 @@ augroup FileCommands
     " Attempt to open the relative file for this file
     autocmd BufRead * call SplitOther()
 augroup END
-
-" Highlight anything that goes over 81 columns
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
 
 " }}}
 
