@@ -40,7 +40,7 @@ let maplocalleader = "_"
 set shiftwidth=4 softtabstop=4 tabstop=8 expandtab
 set smarttab
 set autoindent
-set formatoptions=qrcnj1
+set formatoptions=qrcnJ1
 
 set autowrite
 set showcmd
@@ -347,6 +347,8 @@ function! SetupJavaEnvironment()
     onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
     onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
     onoremap <buffer> il( :<c-u>normal! F)vi(<cr>
+
+    nnoremap <buffer> <silent> <localleader>i :JavaImportOrganize<CR>
 endfunction
 
 augroup filetype_java
