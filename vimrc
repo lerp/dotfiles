@@ -138,10 +138,12 @@ nnoremap <silent> <leader>a ggvG$
 nnoremap <silent> <leader>ev :vsplit ~/dotfiles/vimrc<CR>
 
 " Cycle through tabs
-nnoremap <silent> H :tabprevious<CR>:silent! DoPulse<CR>
-nnoremap <silent> Q :wincmd h<CR>:silent! DoPulse<CR>
-nnoremap <silent> L :tabnext<CR>:silent! DoPulse<CR>
-nnoremap <silent> E :wincmd l<CR>:silent! DoPulse<CR>
+nnoremap <silent> <leader>h :tabprevious<CR>:silent! DoPulse<CR>
+nnoremap <silent> <leader>l :tabnext<CR>:silent! DoPulse<CR>
+nnoremap <silent> <C-H> :wincmd h<CR>:silent! DoPulse<CR>
+nnoremap <silent> <C-L> :wincmd l<CR>:silent! DoPulse<CR>
+nnoremap <silent> <C-K> :wincmd k<CR>:silent! DoPulse<CR>
+nnoremap <silent> <C-J> :wincmd j<CR>:silent! DoPulse<CR>
 
 " Create new tab
 nnoremap <silent> <C-t> :tabnew<CR>
@@ -161,8 +163,8 @@ noremap N Nzz:silent! DoPulse<CR>
 noremap <silent> <C-S> :w<CR>
 
 " Easier start of line & end of line
-nnoremap <leader>h ^
-nnoremap <leader>l $
+nnoremap H ^
+nnoremap L $
 
 " Easier escaping
 inoremap jk <esc>l
