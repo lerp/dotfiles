@@ -40,7 +40,7 @@ let maplocalleader = "_"
 set shiftwidth=4 softtabstop=4 tabstop=8 expandtab
 set smarttab
 set autoindent
-set formatoptions=qrcnJ1
+set formatoptions=qrcn1
 
 set autowrite
 set showcmd
@@ -204,6 +204,8 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdtree'
 Bundle 'lerp/linepulse'
+Bundle 'L9'
+Bundle 'othree/vim-autocomplpop'
 
 filetype plugin indent on
 
@@ -245,6 +247,14 @@ let g:linepulse_start = "guibg"
 let g:linepulse_end   = "#606060"
 let g:linepulse_steps = 30
 let g:linepulse_time  = 100
+
+" }}}
+
+" Eclim ---------------------------------------------------------------------{{{
+
+if isdirectory($HOME . ".vim/bundle/eclim")
+    set rtp+=~/.vim/bundle/eclim
+endif
 
 " }}}
 
@@ -342,7 +352,7 @@ augroup END
 " Java --------------------------------------------------------------------- {{{
 
 function! SetupJavaEnvironment()
-    nnoremap <buffer> <F5> :wa<CR>:!mvn exec:java<cr>
+    nnoremap <buffer> <F5> :wa<CR>:Mvn exec:java<cr>
     nnoremap <buffer> <localleader>c 0i//<esc>
     onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
     onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
