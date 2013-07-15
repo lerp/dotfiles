@@ -81,6 +81,10 @@ set autochdir
 " Stop the preview window from showing up
 set completeopt-=preview
 
+set list
+set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
+set showbreak=↪
+
 " Set the colour to jellybeans if it exists
 if filereadable($HOME . "/.vim/colors/jellybeans.vim")
     colorscheme jellybeans
