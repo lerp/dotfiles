@@ -152,8 +152,8 @@ nnoremap <silent> <C-t> :tabnew<CR>
 nnoremap gf <C-W>gf
 
 " Make blank lines and stay in normal mode
-nnoremap <silent> <leader>o o<Esc>
-nnoremap <silent> <leader>O O<Esc>
+nnoremap <silent> <leader>o o<Esc>k
+nnoremap <silent> <leader>O O<Esc>j
 
 " Centers the screen on the matched search
 noremap n nzz:silent! DoPulse<CR>
