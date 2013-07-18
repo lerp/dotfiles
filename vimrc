@@ -17,6 +17,9 @@ set statusline+=%4l
 set statusline+=/
 set statusline+=%L
 
+" Change the vertical fill character to a space
+set fillchars=vert:\ 
+
 " Highlight search matches as we type
 set incsearch
 
@@ -189,6 +192,7 @@ vnoremap <Space> za
 " |                             Plugins Section                                |
 " +----------------------------------------------------------------------------+
 " {{{
+
 " Vundle ------------------------------------------------------------------- {{{
 
 set nocompatible
@@ -198,14 +202,14 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
-Bundle 'Valloric/YouCompleteMe'
+" Bundle 'Valloric/YouCompleteMe'
 Bundle 'tpope/vim-pathogen'
 Bundle 'tpope/vim-fugitive'
-Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdtree'
 Bundle 'lerp/linepulse'
 Bundle 'L9'
 Bundle 'othree/vim-autocomplpop'
+Bundle 'ervandew/supertab'
 
 filetype plugin indent on
 
@@ -233,7 +237,7 @@ nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 " YCM and Syntastic -------------------------------------------------------- {{{
 
-let g:ycm_confirm_extra_conf=0
+" let g:ycm_confirm_extra_conf=0
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
@@ -252,9 +256,30 @@ let g:linepulse_time  = 100
 
 " Eclim ---------------------------------------------------------------------{{{
 
-if isdirectory($HOME . ".vim/bundle/eclim")
-    set rtp+=~/.vim/bundle/eclim
+function! MeetsForJavaEclim(context)
+    return g:acp_behaviorJavaEclimLength >= 0 && a:context =~ '\k\.\k\{1,}$'
+endfunction
+
+if isdirectory($HOME . ".vim/eclim")
+    set rtp+=~/.vim/eclim
+
+    let g:acp_behavior = {
+        \ 'java': [{
+            \ 'command'      : "\<c-x>\<c-u>",
+            \ 'completefunc' : 'eclim#java#complete#CodeComplete',
+            \ 'meets'        : 'MeetsForJavaEclim',
+        \ }]
+    \ }
+
+    " Disable by default
+    EclimDisable
 endif
+
+" }}}
+
+" Supertab ----------------------------------------------------------------- {{{
+
+let g:SuperTabDefaultCompletionType = "<C-N>"
 
 " }}}
 
@@ -352,13 +377,27 @@ augroup END
 " Java --------------------------------------------------------------------- {{{
 
 function! SetupJavaEnvironment()
-    nnoremap <buffer> <F5> :wa<CR>:Mvn exec:java<cr>
+    EclimEnable
+
+    set noautochdir
+
+    nnoremap <buffer> <F5> :wa<CR>:Mvn exec:java<CR>
+    nnoremap <buffer> <F6> :wa<CR>:!mvnExec<CR>
     nnoremap <buffer> <localleader>c 0i//<esc>
     onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
     onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
     onoremap <buffer> il( :<c-u>normal! F)vi(<cr>
 
     nnoremap <buffer> <silent> <localleader>i :JavaImportOrganize<CR>
+
+    " Hide NERDTree
+    let NERDTreeChDirMode=0
+
+    augroup NERDTreeCommands
+        autocmd!
+    augroup END
+
+    nnoremap <silent> <buffer> <F2> :ProjectTreeToggle<CR>:wincmd =<CR>
 endfunction
 
 augroup filetype_java
