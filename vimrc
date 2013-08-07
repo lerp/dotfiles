@@ -210,6 +210,7 @@ Bundle 'lerp/linepulse'
 Bundle 'L9'
 Bundle 'othree/vim-autocomplpop'
 Bundle 'ervandew/supertab'
+Bundle 'suan/vim-instant-markdown'
 
 filetype plugin indent on
 
@@ -347,6 +348,9 @@ augroup FileCommands
 
     " Attempt to open the relative file for this file
     autocmd BufRead * call SplitOther()
+
+    " Set .BAS files to basic filetype
+    autocmd BufRead *.BAS setlocal ft=basic
 augroup END
 
 " }}}
@@ -381,8 +385,8 @@ function! SetupJavaEnvironment()
 
     set noautochdir
 
-    nnoremap <buffer> <F5> :wa<CR>:Mvn exec:java<CR>
-    nnoremap <buffer> <F6> :wa<CR>:!mvnExec<CR>
+    nnoremap <buffer> <F5> :wa<CR>:ProjectCD<CR>:Mvn -q exec:java<CR>
+    nnoremap <buffer> <F6> :wa<CR>:ProjectCD<CR>:!mvnExec<CR>
     nnoremap <buffer> <localleader>c 0i//<esc>
     onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
     onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
