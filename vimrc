@@ -88,6 +88,11 @@ set list
 set listchars=tab:▸\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
 set showbreak=↪
 
+" Disable annoying beeping
+set noerrorbells
+set visualbell
+set t_vb=
+
 " Set the colour to jellybeans if it exists
 if filereadable($HOME . "/.vim/colors/jellybeans.vim")
     colorscheme jellybeans
@@ -211,6 +216,9 @@ Bundle 'L9'
 Bundle 'othree/vim-autocomplpop'
 Bundle 'ervandew/supertab'
 Bundle 'suan/vim-instant-markdown'
+Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Bundle 'klen/python-mode'
+Bundle 'davidhalter/jedi-vim'
 
 filetype plugin indent on
 
@@ -232,6 +240,7 @@ augroup NERDTreeCommands
 augroup END
 
 let NERDTreeChDirMode=1
+let NERDTreeIgnore=['\.pyc$']
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 " }}}
@@ -281,6 +290,13 @@ endif
 " Supertab ----------------------------------------------------------------- {{{
 
 let g:SuperTabDefaultCompletionType = "<C-N>"
+
+" }}}
+
+" Powerline -----------------------------------------------------------------{{{
+
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
+set laststatus=2
 
 " }}}
 
@@ -482,5 +498,34 @@ augroup filetype_bash
 augroup END
 
 " }}}
+
+" Python ------------------------------------------------------------------- {{{
+
+function! SetupPythonEnvironment()
+    let g:pymode_rope = 0
+    let g:pymode_doc = 1
+    let g:pymode_doc_key = 'K'
+    let g:pymode_lint = 1
+    let g:pymode_lint_checker = "pyflakes,pep8"
+    let g:pymode_lit_write = 1
+    let g:pymode_virtualenv = 1
+    let g:pymode_breakpoint = 1
+    let g:pymode_breakpoint_key = '<localleader>b'
+    let g:pymode_syntax = 1
+    let g:pymode_syntax_all = 1
+    let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+    let g:pymode_sytnax_space_errors = g:pymode_syntax_all
+
+    let g:pymode_folding = 0
+
+    nnoremap <buffer> <silent> <F5> :wa<CR>:!python %<CR>
+endfunction
+
+augroup filetype_python
+    autocmd!
+
+    " Execute the file when in a sh file
+    autocmd FileType python call SetupPythonEnvironment()
+augroup END
 
 " }}}
