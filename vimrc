@@ -1,21 +1,11 @@
-" +----------------------------------------------------------------------------+
-" |                             Options Section                                |
-" +----------------------------------------------------------------------------+
-" {{{
+"=============================================================================="
+" OPTIONS {{{
 
 " Disable vi compatibility
 set nocompatible
 
 " Enable syntax highlighting
 syntax on
-
-" Enable status line
-set laststatus=2
-set statusline=%f
-set statusline+=%=
-set statusline+=%4l
-set statusline+=/
-set statusline+=%L
 
 " Change the vertical fill character to a space
 set fillchars=vert:\ 
@@ -57,6 +47,7 @@ set undodir=~/.vim/tmp/undo//
 set backupdir=~/.vim/tmp/backup//
 set directory=~/.vim/tmp/swap//
 
+" Create the directories for vim's files
 if !isdirectory(expand(&undodir))
     call mkdir(expand(&undodir), "p")
 endif
@@ -75,11 +66,14 @@ set nowrap
 set textwidth=80
 set colorcolumn=+1
 
+" Ignore case when doing searches
+set smartcase
+
 " Relative numbers are so useful with commands like :m!
 set relativenumber
 
-" Automatically change to the working directory to the file's directory
-set autochdir
+" Don't automatically change to the working directory to the file's directory
+set noautochdir
 
 " Stop the preview window from showing up
 set completeopt-=preview
@@ -90,16 +84,17 @@ set showbreak=↪
 
 " Disable annoying beeping
 set noerrorbells
-set visualbell
-set t_vb=
+set vb t_vb=
 
 " Set the colour to jellybeans if it exists
-if filereadable($HOME . "/.vim/colors/jellybeans.vim")
+if filereadable($HOME . "/.vim/bundle/jellybeans.vim/colors/jellybeans.vim")
     colorscheme jellybeans
 
     " Highlight anything that goes over 81 columns
     highlight OverLength ctermbg=red ctermfg=white guibg=#592929
     match OverLength /\%>81v.\+/
+
+    autocmd! GuiEnter * set vb t_vb=
 endif
 
 if has("gui_running")
@@ -115,11 +110,8 @@ if has("gui_running")
 endif
 
 " }}}
-
-" +----------------------------------------------------------------------------+
-" |                             Mapping Section                                |
-" +----------------------------------------------------------------------------+
-" {{{
+"=============================================================================="
+" MAPPINGS {{{
 
 " Remap % to the tab key. It's just easier!
 nnoremap <tab> %
@@ -191,14 +183,14 @@ nnoremap <leader>cw mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 nnoremap <Space> za
 vnoremap <Space> za
 
+" Mapping for easier spell checking.
+nnoremap <leader>s i<C-X><C-S>
+
 " }}}
+"=============================================================================="
+" PLUGINS {{{
 
-" +----------------------------------------------------------------------------+
-" |                             Plugins Section                                |
-" +----------------------------------------------------------------------------+
-" {{{
-
-" Vundle ------------------------------------------------------------------- {{{
+" VUNDLE {{{
 
 set nocompatible
 filetype off
@@ -213,26 +205,31 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'scrooloose/nerdtree'
 Bundle 'lerp/linepulse'
 Bundle 'L9'
-Bundle 'othree/vim-autocomplpop'
 Bundle 'ervandew/supertab'
 Bundle 'suan/vim-instant-markdown'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'klen/python-mode'
 Bundle 'davidhalter/jedi-vim'
+Bundle 'LaTeX-Box-Team/LaTeX-Box'
+Bundle 'kien/ctrlp.vim'
+Bundle 'vim-scripts/taglist.vim'
+Bundle 'vim-scripts/css_color.vim'
+Bundle 'vim-scripts/camelcasemotion'
+Bundle 'vim-scripts/AutoComplPop'
+Bundle 'vim-scripts/jellybeans.vim'
+Bundle 'scrooloose/syntastic'
 
 filetype plugin indent on
 
 " }}}
-
-" Pathogen ----------------------------------------------------------------- {{{
+" PATHOGEN {{{
 
 if !exists("g:loaded_pathogen")
     call pathogen#infect()
 endif
 
 " }}}
-
-" NERDTree ----------------------------------------------------------------- {{{
+" NERDTREE {{{
 
 augroup NERDTreeCommands
     autocmd!
@@ -244,18 +241,18 @@ let NERDTreeIgnore=['\.pyc$']
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 " }}}
-
-" YCM and Syntastic -------------------------------------------------------- {{{
+" SYNTASTIC {{{
 
 " let g:ycm_confirm_extra_conf=0
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
 let g:syntastic_java_checker = 'javac'
+let g:syntastic_error_symbol = '✗'
+let g:syntastic_warning_symbol = '⚠'
 
 " }}}
-
-" LinePulse ---------------------------------------------------------------- {{{
+" LINEPULSE {{{
 
 let g:linepulse_start = "guibg"
 let g:linepulse_end   = "#606060"
@@ -263,37 +260,36 @@ let g:linepulse_steps = 30
 let g:linepulse_time  = 100
 
 " }}}
+" ECLIM {{{
 
-" Eclim ---------------------------------------------------------------------{{{
-
+let g:acp_behaviourJavaEclimLength = 2
 function! MeetsForJavaEclim(context)
-    return g:acp_behaviorJavaEclimLength >= 0 && a:context =~ '\k\.\k\{1,}$'
+    return g:acp_behaviourJavaEclimLength >= 0 && 
+                \ a:context =~ '\k\.\k\{' . g:acp_behaviourJavaEclimLength . ',}$'
 endfunction
 
-if isdirectory($HOME . ".vim/eclim")
-    set rtp+=~/.vim/eclim
+set rtp+=~/.vim/eclim
 
-    let g:acp_behavior = {
-        \ 'java': [{
-            \ 'command'      : "\<c-x>\<c-u>",
-            \ 'completefunc' : 'eclim#java#complete#CodeComplete',
-            \ 'meets'        : 'MeetsForJavaEclim',
-        \ }]
-    \ }
-
-    " Disable by default
-    EclimDisable
-endif
+let g:acp_behavior = {
+    \ 'java': [{
+        \ 'command'      : "\<c-x>\<c-u>",
+        \ 'completefunc' : 'eclim#java#complete#CodeComplete',
+        \ 'meets'        : 'MeetsForJavaEclim',
+    \ }]
+\ }
 
 " }}}
-
-" Supertab ----------------------------------------------------------------- {{{
+" SUPERTAB {{{
 
 let g:SuperTabDefaultCompletionType = "<C-N>"
 
 " }}}
-
-" Powerline -----------------------------------------------------------------{{{
+" TAGLIST {{{
+    let Tlist_Auto_Open = 1
+    let Tlist_Auto_Update = 1
+    let Tlist_WinWidth = 35
+" }}}
+" POWERLINE {{{
 
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
 set laststatus=2
@@ -301,11 +297,8 @@ set laststatus=2
 " }}}
 
 " }}}
-
-" +----------------------------------------------------------------------------+
-" |                             Custom Section                                 |
-" +----------------------------------------------------------------------------+
-" {{{
+"=============================================================================="
+" CUSTOM FUNCTIONS {{{
 
 " The pairs used by SplitOther()
 let g:SplitPairs = [
@@ -353,6 +346,14 @@ endfunction
 
 nnoremap <leader>w :call DirectorySave()<cr>
 
+function! JavaProject()
+    NERDTreeClose
+    Tlist
+    ProjectsTree
+endfunction
+
+nnoremap <leader>jp :call JavaProject()<cr>
+
 augroup FileCommands
     autocmd!
 
@@ -370,54 +371,23 @@ augroup FileCommands
 augroup END
 
 " }}}
-
-" +----------------------------------------------------------------------------+
-" |                             Languages Section                              |
-" |                             =================                              |
-" |                                                                            |
-" | This section sets up common commands for different languages I work in. I  |
-" | try to have the commands listed below working for each language.           |
-" |                                                                            |
-" |                                  Mappings                                  |
-" |                             =================                              |
-" |                                                                            |
-" | <F5>               - Save and execute                                      |
-" | <localleader>c     - Comment current line                                  |
-" |                                                                            |
-" |                                 Operators                                  |
-" |                             =================                              |
-" |                                                                            |
-" | ib                 - Inner block                                           |
-" | in(                - Inside next parenthesis                               |
-" | il(                - Inside last parenthesis                               |
-" |                                                                            |
-" +----------------------------------------------------------------------------+
-" {{{
+"=============================================================================="
+" LANGUAGE SETTINGS {{{
 
 " Java --------------------------------------------------------------------- {{{
 
 function! SetupJavaEnvironment()
-    EclimEnable
-
     set noautochdir
+    set path=./**
 
-    nnoremap <buffer> <F5> :wa<CR>:ProjectCD<CR>:Mvn -q exec:java<CR>
-    nnoremap <buffer> <F6> :wa<CR>:ProjectCD<CR>:!mvnExec<CR>
+    nnoremap <buffer> <F5> :wa<CR>:ProjectCD<CR>:Mvn compile<CR>:Mvn -q exec:java<CR>
+    nnoremap <buffer> <F6> :wa<CR>:ProjectCD<CR>:Mvn compile<CR>:!mvnExec<CR>
     nnoremap <buffer> <localleader>c 0i//<esc>
     onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
     onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
     onoremap <buffer> il( :<c-u>normal! F)vi(<cr>
 
     nnoremap <buffer> <silent> <localleader>i :JavaImportOrganize<CR>
-
-    " Hide NERDTree
-    let NERDTreeChDirMode=0
-
-    augroup NERDTreeCommands
-        autocmd!
-    augroup END
-
-    nnoremap <silent> <buffer> <F2> :ProjectTreeToggle<CR>:wincmd =<CR>
 endfunction
 
 augroup filetype_java
@@ -425,9 +395,6 @@ augroup filetype_java
 
     " Set up mappings
     autocmd FileType java call SetupJavaEnvironment()
-
-    " Enable folding
-    autocmd FileType java setlocal foldmethod=marker foldmarker={,}
 augroup END
 
 " }}}
@@ -526,6 +493,20 @@ augroup filetype_python
 
     " Execute the file when in a sh file
     autocmd FileType python call SetupPythonEnvironment()
+augroup END
+
+" }}}
+"
+" Latex -------------------------------------------------------------------- {{{
+
+function! SetupLatexEnvironment()
+    let g:LatexBox_latexmk_options = "-pvc -pdfps"
+endfunction
+
+augroup filetype_latex
+    autocmd!
+
+    autocmd FileType tex call SetupLatexEnvironment()
 augroup END
 
 " }}}
