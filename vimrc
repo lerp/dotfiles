@@ -87,16 +87,6 @@ set noerrorbells
 set vb t_vb=
 
 " Set the colour to jellybeans if it exists
-if filereadable($HOME . "/.vim/bundle/jellybeans.vim/colors/jellybeans.vim")
-    colorscheme jellybeans
-
-    " Highlight anything that goes over 81 columns
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-    match OverLength /\%>81v.\+/
-
-    autocmd! GuiEnter * set vb t_vb=
-endif
-
 if has("gui_running")
     set guifont=Liberation\ Mono\ 9
 
@@ -199,13 +189,10 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
-" Bundle 'Valloric/YouCompleteMe'
+Bundle 'Valloric/YouCompleteMe'
 Bundle 'tpope/vim-pathogen'
 Bundle 'tpope/vim-fugitive'
 Bundle 'scrooloose/nerdtree'
-Bundle 'lerp/linepulse'
-Bundle 'L9'
-Bundle 'ervandew/supertab'
 Bundle 'suan/vim-instant-markdown'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'klen/python-mode'
@@ -215,7 +202,6 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'vim-scripts/taglist.vim'
 Bundle 'vim-scripts/css_color.vim'
 Bundle 'vim-scripts/camelcasemotion'
-Bundle 'vim-scripts/AutoComplPop'
 Bundle 'vim-scripts/jellybeans.vim'
 Bundle 'scrooloose/syntastic'
 
@@ -291,9 +277,21 @@ let g:SuperTabDefaultCompletionType = "<C-N>"
 " }}}
 " POWERLINE {{{
 
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
+" Sets the font to Powerline if available
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9,DejaVu\ Sans\ Mono\ 9
 set laststatus=2
 
+" }}}
+" JELLYBEANS {{{
+if filereadable($HOME . "/.vim/bundle/jellybeans.vim/colors/jellybeans.vim")
+    colorscheme jellybeans
+
+    " Highlight anything that goes over 81 columns
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+    match OverLength /\%>81v.\+/
+
+    autocmd! GuiEnter * set vb t_vb=
+endif
 " }}}
 
 " }}}
@@ -380,8 +378,7 @@ function! SetupJavaEnvironment()
     set noautochdir
     set path=./**
 
-    nnoremap <buffer> <F5> :wa<CR>:ProjectCD<CR>:Mvn compile<CR>:Mvn -q exec:java<CR>
-    nnoremap <buffer> <F6> :wa<CR>:ProjectCD<CR>:Mvn compile<CR>:!mvnExec<CR>
+    nnoremap <buffer> <F5> :wa<CR>:ProjectCD<CR>:!gradle run<CR>
     nnoremap <buffer> <localleader>c 0i//<esc>
     onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
     onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
