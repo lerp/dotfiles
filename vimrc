@@ -153,7 +153,13 @@ vnoremap ? ?\v
 nnoremap <leader>cw mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
 " Mapping for easier spell checking.
-nnoremap <leader>s  ea<C-X><C-S>
+nnoremap <leader>s ea<C-X><C-S>
+
+" Open terminal in current working directory
+nnoremap <silent> <leader>t :!urxvt &<CR><CR>
+
+" Sort the current paragraph
+nnoremap <silent> <leader>sp vip:sort<CR>
 
 " }}}
 "=============================================================================="
@@ -167,22 +173,24 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'tpope/vim-fugitive'
-Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
-Plugin 'vim-scripts/css_color.vim'
-Plugin 'vim-scripts/camelcasemotion'
-Plugin 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
-Plugin 'scrooloose/syntastic'
 Plugin 'Lokaltog/vim-easymotion'
-Plugin 'groenewege/vim-less'
 Plugin 'Raimondi/delimitMate'
-Plugin 'vim-scripts/SearchComplete'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'bling/vim-airline'
+Plugin 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
 Plugin 'docunext/closetag.vim'
+Plugin 'gmarik/Vundle.vim'
+Plugin 'groenewege/vim-less'
+Plugin 'kien/ctrlp.vim'
+Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'nvie/vim-flake8'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'tpope/vim-fugitive'
+Plugin 'vim-scripts/SearchComplete'
+Plugin 'vim-scripts/camelcasemotion'
+Plugin 'vim-scripts/css_color.vim'
+Plugin 'vim-scripts/octave.vim--'
 
 call vundle#end()
 filetype plugin indent on
@@ -252,7 +260,7 @@ let delimitMate_expand_cr = 1
 " }}}
 " AIRLINE {{{
 if has("gui_running")
-    set guifont=Liberation\ Mono\ for\ Powerline\ 9,Liberation\ Mono\ 9
+    set guifont=Liberation\ Mono\ 9
 
     " Get rid of all the window decoration that comes with gvim
     set guioptions=
@@ -310,6 +318,17 @@ augroup FileCommands
     " Save whenever focus is lost
     autocmd BufLeave,FocusLost * silent! wall
 augroup END
+
+function! s:get_visual_selection()
+    " Why is this not a built-in Vim script function?!
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+
+    return join(lines, "\n")
+endfunction
 
 " }}}
 "=============================================================================="
@@ -474,6 +493,8 @@ augroup END
 
 " }}}
 
+" JS ----------------------------------------------------------------------- {{{
+
 function! SetupJSEnvironment()
     setlocal tabstop=2
     setlocal shiftwidth=2
@@ -485,3 +506,25 @@ augroup filetype_js
 
     autocmd FileType js call SetupJSEnvironment()
 augroup END
+
+" }}}
+
+" Octave (Matlab) ---------------------------------------------------------- {{{
+
+function! RunInOctave(expression)
+    execute "!octave -q --eval '" . a:expression . "'"
+endfunction
+
+function! SetupOctaveEnvironment()
+    nnoremap <buffer> <F5> :wa<CR>:!octave %<CR>
+    nnoremap <buffer> <F6> :call RunInOctave(getline('.'))<CR>
+    vnoremap <buffer> <silent> <F6> :call RunInOctave(<SID>get_visual_selection())<CR>
+endfunction
+
+augroup filetype_m
+    autocmd!
+
+    autocmd FileType matlab call SetupOctaveEnvironment()
+augroup END
+
+" }}}

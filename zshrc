@@ -55,4 +55,8 @@ export EDITOR="gvim"
 # }}}
 
 # Aliases {{{
+alias shutdown="sudo shutdown"
+alias reboot="sudo reboot"
+alias poweroff="sudo poweroff"
+alias phone-tether="sudo dhcpcd enp0s26u1u2"
 # }}}

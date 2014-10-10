@@ -1,6 +1,5 @@
 #set background colour
 exec --no-startup-id xsetroot -solid "#000000"
-exec --no-startup-id feh      --bg-fill /home/james/Wallpapers/archlogo.png
 
 #Set mod
 set $mod Mod1
@@ -39,15 +38,30 @@ bindsym $mod+i split v
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen
 
-# Start dino file manager
-bindsym $mod+Shift+f exec --no-startup-id dino
-
 # toggle tiling / floating
 bindsym $mod+space floating toggle
 
 # move focused container to workspace
-bindsym $mod+1 move container to workspace 1
-bindsym $mod+2 move container to workspace 2
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+
+# Switch to the corresponding workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -55,9 +69,12 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# Open browser
+bindsym $mod+b exec --no-startup-id firefox
 
-# 3 pixel border
-new_window pixel 3
+# 1 pixel border
+new_window pixel 1
+hide_edge_borders both
 
 # colours                border  background text    indicator
 client.focused           #556779 #556779    #FFFFFF #FFB964
