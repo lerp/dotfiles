@@ -105,7 +105,8 @@ noremap <F1> <ESC>
 " Cut, Copy & Paste to clipboard
 vnoremap <silent> <leader>cu "+x
 vnoremap <silent> <leader>cp "+y
-nnoremap <silent> <leader>p :silent! set paste<CR>"+gP:set nopaste<CR>
+nnoremap <silent> <leader>p :silent! set paste<CR>"+p:set nopaste<CR>
+inoremap <silent> <leader>p <ESC>:silent! set paste<CR>"+p:set nopaste<CR>a
 
 " Select all
 nnoremap <silent> <leader>a ggvG$
@@ -160,6 +161,9 @@ nnoremap <silent> <leader>t :!urxvt &<CR><CR>
 
 " Sort the current paragraph
 nnoremap <silent> <leader>sp vip:sort<CR>
+
+" Open slides in directory
+nnoremap <silent> <leader>os :!mupdf slides.pdf &<CR><CR>
 
 " }}}
 "=============================================================================="
@@ -516,7 +520,7 @@ function! RunInOctave(expression)
 endfunction
 
 function! SetupOctaveEnvironment()
-    nnoremap <buffer> <F5> :wa<CR>:!octave %<CR>
+    nnoremap <buffer> <F5> :wa<CR>:!octave -q "%"<CR>
     nnoremap <buffer> <F6> :call RunInOctave(getline('.'))<CR>
     vnoremap <buffer> <silent> <F6> :call RunInOctave(<SID>get_visual_selection())<CR>
 endfunction
@@ -525,6 +529,73 @@ augroup filetype_m
     autocmd!
 
     autocmd FileType matlab call SetupOctaveEnvironment()
+augroup END
+
+" }}}
+
+" Text --------------------------------------------------------------------- {{{
+
+function! SetupTextEnvironment()
+    setlocal spell
+    setlocal encoding=utf-8
+
+    abbreviate <buffer> _0 ₀
+    abbreviate <buffer> weierp ℘
+
+    " Greek alphabet
+    abbreviate <buffer> alpha α
+    abbreviate <buffer> beta β
+    abbreviate <buffer> gamma γ
+    abbreviate <buffer> delta δ
+    abbreviate <buffer> Delta Δ
+    abbreviate <buffer> epsilon ε
+    abbreviate <buffer> zeta ζ
+    abbreviate <buffer> eta η
+    abbreviate <buffer> theta θ
+    abbreviate <buffer> iota ι
+    abbreviate <buffer> kappa κ
+    abbreviate <buffer> lambda λ
+    abbreviate <buffer> mu μ
+    abbreviate <buffer> nu ν
+    abbreviate <buffer> xi ξ
+    abbreviate <buffer> pi π
+    abbreviate <buffer> rho ρ
+    abbreviate <buffer> Sigma Σ
+    abbreviate <buffer> sigma σ
+    abbreviate <buffer> tau τ
+    abbreviate <buffer> upsilon υ
+    abbreviate <buffer> phi φ
+    abbreviate <buffer> chi χ
+    abbreviate <buffer> psi Ψ
+    abbreviate <buffer> omega ω
+    abbreviate <buffer> Omega Ω
+
+    " Math Symbols
+    abbreviate <buffer> +- ±
+    abbreviate <buffer> *. ·
+    abbreviate <buffer> !divide ÷
+    abbreviate <buffer> !sqrt √
+    abbreviate <buffer> !integral ∫
+    abbreviate <buffer> !cintegral ∮
+    abbreviate <buffer> !therefore ∴
+    abbreviate <buffer> !because ∵
+    abbreviate <buffer> !propto ∝
+    abbreviate <buffer> !infinity ∞
+    abbreviate <buffer> !equiv ≡
+
+    " Logic Symbols
+    abbreviate <buffer> !iff ↔
+    abbreviate <buffer> !implies →
+    abbreviate <buffer> !leq ≤
+    abbreviate <buffer> !geq ≥
+    abbreviate <buffer> !lesspref ≺
+    abbreviate <buffer> !morepref ≻
+endfunction
+
+augroup filetype_txt
+    autocmd!
+
+    autocmd FileType text call SetupTextEnvironment()
 augroup END
 
 " }}}
