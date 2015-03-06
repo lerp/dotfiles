@@ -1,0 +1,52 @@
+#!/bin/python
+from random import randint
+
+
+def genUtilities(amount, minUtility, maxUtility):
+    return [randint(minUtility, maxUtility) for i in range(0, amount)]
+
+
+def labelFor(num):
+    return chr(ord('a') + num).upper()
+
+
+def printColLabels(amount, width, leadSize=3):
+    print(" " * leadSize, end="")
+
+    width -= 1
+    colLeft = " " * (width // 2)
+    colRight = " " * (width - len(colLeft))
+
+    for i in range(0, amount):
+        print(colLeft, labelFor(i), colRight, sep="", end="")
+
+    print()
+
+
+def main():
+    minUtility = 1
+    maxUtility = 100
+    size = randint(2, 3)
+    utilities = [
+        genUtilities(size ** 2, minUtility, maxUtility),
+        genUtilities(size ** 2, minUtility, maxUtility)
+    ]
+
+    for row in range(0, size):
+        idx = row * size
+
+        for player in range(0, 2):
+            for utility in utilities[player][idx:(idx + size)]:
+                if player == 0:
+                    print(end="  ")
+
+                print(utility, end="")
+
+                if player == 1:
+                    print(end="  ")
+
+            print()
+
+
+if __name__ == "__main__":
+    main()

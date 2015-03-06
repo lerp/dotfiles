@@ -70,6 +70,7 @@ set smartcase
 
 " Relative numbers are so useful with commands like :m!
 set relativenumber
+set number
 
 " Don't automatically change to the working directory to the file's directory
 set noautochdir
@@ -187,7 +188,6 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'groenewege/vim-less'
 Plugin 'kien/ctrlp.vim'
 Plugin 'kien/rainbow_parentheses.vim'
-Plugin 'nvie/vim-flake8'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/syntastic'
 Plugin 'tpope/vim-fugitive'
@@ -195,6 +195,8 @@ Plugin 'vim-scripts/SearchComplete'
 Plugin 'vim-scripts/camelcasemotion'
 Plugin 'vim-scripts/css_color.vim'
 Plugin 'vim-scripts/octave.vim--'
+Plugin 'tfnico/vim-gradle'
+Plugin 'digitaltoad/vim-jade'
 
 call vundle#end()
 filetype plugin indent on
@@ -209,7 +211,7 @@ let g:ycm_confirm_extra_conf = 0
 
 augroup NERDTreeCommands
     autocmd!
-    autocmd VimEnter * NERDTree
+    " autocmd VimEnter * NERDTree
 augroup END
 
 let NERDTreeChDirMode=1
@@ -238,6 +240,9 @@ let g:linepulse_time  = 100
 
 set rtp+=~/.vim/eclim
 let g:EclimCompletionMethod = 'omnifunc'
+
+" Mapping to start eclim sever.
+nnoremap <silent> <leader>se :!/usr/share/eclipse/eclimd -b<CR>
 
 " }}}
 " SUPERTAB {{{
@@ -440,21 +445,7 @@ augroup END
 " Python ------------------------------------------------------------------- {{{
 
 function! SetupPythonEnvironment()
-    let g:pymode_rope = 0
-    let g:pymode_doc = 1
-    let g:pymode_doc_key = 'K'
-    let g:pymode_lint = 1
-    let g:pymode_lint_checker = "pyflakes,pep8"
-    let g:pymode_lit_write = 1
-    let g:pymode_virtualenv = 1
-    let g:pymode_breakpoint = 1
-    let g:pymode_breakpoint_key = '<localleader>b'
-    let g:pymode_syntax = 1
-    let g:pymode_syntax_all = 1
-    let g:pymode_syntax_indent_errors = g:pymode_syntax_all
-    let g:pymode_sytnax_space_errors = g:pymode_syntax_all
-
-    let g:pymode_folding = 0
+    let g:syntastic_python_checkers = [ "flake8" ]
 
     nnoremap <buffer> <silent> <F5> :wa<CR>:!python %<CR>
 endfunction
@@ -520,6 +511,8 @@ function! RunInOctave(expression)
 endfunction
 
 function! SetupOctaveEnvironment()
+    set filetype=octave
+
     nnoremap <buffer> <F5> :wa<CR>:!octave -q "%"<CR>
     nnoremap <buffer> <F6> :call RunInOctave(getline('.'))<CR>
     vnoremap <buffer> <silent> <F6> :call RunInOctave(<SID>get_visual_selection())<CR>
@@ -539,57 +532,57 @@ function! SetupTextEnvironment()
     setlocal spell
     setlocal encoding=utf-8
 
-    abbreviate <buffer> _0 ₀
-    abbreviate <buffer> weierp ℘
+    iabbrev <silent> <buffer> _0 ₀
+    iabbrev <silent> <buffer> weierp ℘
 
     " Greek alphabet
-    abbreviate <buffer> alpha α
-    abbreviate <buffer> beta β
-    abbreviate <buffer> gamma γ
-    abbreviate <buffer> delta δ
-    abbreviate <buffer> Delta Δ
-    abbreviate <buffer> epsilon ε
-    abbreviate <buffer> zeta ζ
-    abbreviate <buffer> eta η
-    abbreviate <buffer> theta θ
-    abbreviate <buffer> iota ι
-    abbreviate <buffer> kappa κ
-    abbreviate <buffer> lambda λ
-    abbreviate <buffer> mu μ
-    abbreviate <buffer> nu ν
-    abbreviate <buffer> xi ξ
-    abbreviate <buffer> pi π
-    abbreviate <buffer> rho ρ
-    abbreviate <buffer> Sigma Σ
-    abbreviate <buffer> sigma σ
-    abbreviate <buffer> tau τ
-    abbreviate <buffer> upsilon υ
-    abbreviate <buffer> phi φ
-    abbreviate <buffer> chi χ
-    abbreviate <buffer> psi Ψ
-    abbreviate <buffer> omega ω
-    abbreviate <buffer> Omega Ω
+    iabbrev <silent> <buffer> alpha α
+    iabbrev <silent> <buffer> beta β
+    iabbrev <silent> <buffer> gamma γ
+    iabbrev <silent> <buffer> delta δ
+    iabbrev <silent> <buffer> Delta Δ
+    iabbrev <silent> <buffer> epsilon ε
+    iabbrev <silent> <buffer> zeta ζ
+    iabbrev <silent> <buffer> eta η
+    iabbrev <silent> <buffer> theta θ
+    iabbrev <silent> <buffer> iota ι
+    iabbrev <silent> <buffer> kappa κ
+    iabbrev <silent> <buffer> lambda λ
+    iabbrev <silent> <buffer> mu μ
+    iabbrev <silent> <buffer> nu ν
+    iabbrev <silent> <buffer> xi ξ
+    iabbrev <silent> <buffer> pi π
+    iabbrev <silent> <buffer> rho ρ
+    iabbrev <silent> <buffer> Sigma Σ
+    iabbrev <silent> <buffer> sigma σ
+    iabbrev <silent> <buffer> tau τ
+    iabbrev <silent> <buffer> upsilon υ
+    iabbrev <silent> <buffer> phi φ
+    iabbrev <silent> <buffer> chi χ
+    iabbrev <silent> <buffer> psi Ψ
+    iabbrev <silent> <buffer> omega ω
+    iabbrev <silent> <buffer> Omega Ω
 
     " Math Symbols
-    abbreviate <buffer> +- ±
-    abbreviate <buffer> *. ·
-    abbreviate <buffer> !divide ÷
-    abbreviate <buffer> !sqrt √
-    abbreviate <buffer> !integral ∫
-    abbreviate <buffer> !cintegral ∮
-    abbreviate <buffer> !therefore ∴
-    abbreviate <buffer> !because ∵
-    abbreviate <buffer> !propto ∝
-    abbreviate <buffer> !infinity ∞
-    abbreviate <buffer> !equiv ≡
+    iabbrev <silent> <buffer> +- ±
+    iabbrev <silent> <buffer> *. ·
+    iabbrev <silent> <buffer> !divide ÷
+    iabbrev <silent> <buffer> !sqrt √
+    iabbrev <silent> <buffer> !integral ∫
+    iabbrev <silent> <buffer> !cintegral ∮
+    iabbrev <silent> <buffer> !therefore ∴
+    iabbrev <silent> <buffer> !because ∵
+    iabbrev <silent> <buffer> !propto ∝
+    iabbrev <silent> <buffer> !infinity ∞
+    iabbrev <silent> <buffer> !equiv ≡
 
     " Logic Symbols
-    abbreviate <buffer> !iff ↔
-    abbreviate <buffer> !implies →
-    abbreviate <buffer> !leq ≤
-    abbreviate <buffer> !geq ≥
-    abbreviate <buffer> !lesspref ≺
-    abbreviate <buffer> !morepref ≻
+    iabbrev <silent> <buffer> !iff ↔
+    iabbrev <silent> <buffer> !implies →
+    iabbrev <silent> <buffer> !leq ≤
+    iabbrev <silent> <buffer> !geq ≥
+    iabbrev <silent> <buffer> !lesspref ≺
+    iabbrev <silent> <buffer> !morepref ≻
 endfunction
 
 augroup filetype_txt
