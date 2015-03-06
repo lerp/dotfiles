@@ -1,0 +1,31 @@
+#!/bin/python
+import os
+import os.path as path
+
+
+base_dir = path.dirname(path.realpath(__file__))
+files = {
+    'bspwmrc':   '~/.config/bspwm/bspwmrc',
+    'sxhkdrc':   '~/.config/sxhkd/sxhkdrc',
+    'vimrc':     '~/.vimrc',
+    'Xdefaults': '~/.Xdefaults',
+    'xinitrc':   '~/.xinitrc',
+    'zshrc':     '~/.zshrc'
+}
+
+for source, target in files.items():
+    print(source)
+
+    source_full = path.join(base_dir, source)
+    target_full = path.expanduser(target)
+
+    if path.exists(target_full):
+        skip = input(target_full + " already exists, overwrite? [y/N] ")
+
+        if skip == 'N' or not skip:
+            print("Skipping " + source)
+            continue
+        else:
+            os.remove(target_full)
+
+    os.symlink(source_full, target_full)

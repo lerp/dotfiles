@@ -1,1 +1,43 @@
-/home/james/.config/sxhkd/sxhkdrc
+# Swap focus with mouse
+~button1
+    bspc pointer -g focus
+
+# Move and Resize with mouse
+alt + button{1-3}
+    bspc pointer -g {move,resize_side,resize_corner}
+
+# Close Current Window
+alt + shift + q
+    bspc window -c
+
+# Toggle Floating/Fullscreen state
+alt + {space,f}
+    bspc window -t {floating,fullscreen}
+
+# Focus the respective desktop
+alt + {1-9,0}
+    bspc desktop -f {1-9,10}
+
+# Move the window to the respective desktop
+alt + shift + {1-9,0}
+    bspc window -d {1-9,10}
+
+# Mark this window for splitting along respective axis
+alt + {h,j,k,l}
+    bspc window -p {left,down,up,right}
+
+# Open Terminal
+alt + t
+    urxvt
+
+# Launch Program
+alt + d
+    dmenu_run
+
+# Open Browser
+alt + b
+    chromium
+
+# Restart sxhkd
+alt + shift + r
+    pkill -USR1 -x sxhkd
