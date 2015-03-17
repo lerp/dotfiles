@@ -6,6 +6,12 @@
 alt + button{1-3}
     bspc pointer -g {move,resize_side,resize_corner}
 
+alt + !button{1-3}
+    bspc pointer -t %i %i
+
+alt + @button{1-3}
+    bspc pointer -u
+
 # Close Current Window
 alt + shift + q
     bspc window -c
@@ -36,7 +42,7 @@ alt + d
 
 # Open Browser
 alt + b
-    chromium
+    google-chrome-beta
 
 # Restart sxhkd
 alt + shift + r
