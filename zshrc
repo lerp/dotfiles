@@ -18,26 +18,6 @@ bindkey '^[[7~' beginning-of-line       # Home
 bindkey '^[[8~' end-of-line             # End
 bindkey '^S'    insert-sudo
 
-# Vars
-export EDITOR="gvim"
-export JAVA_HOME=/usr/lib/jvm/java-7-jdk/jre/
-export USER_SCRIPTS=$HOME/dotfiles/scripts
-export PATH=$PATH:$USER_SCRIPTS
-export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dswing.crossplatformlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
-
-# Colours
-export WHITE=#C5C8C6
-export BLACK=#1D1F21
-export DARK_GRAY=#373B41
-export LIGHT_GRAY=#969896
-export RED=#CC6666
-export ORANGE=#DE935F
-export YELLOW=#F0C674
-export GREEN=#B5BD68
-export AQUA=#8ABEB7
-export BLUE=#81A2BE
-export PURPLE=#B294BB
-
 # Prompt
 autoload -U colors && colors
 

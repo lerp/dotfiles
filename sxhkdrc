@@ -38,7 +38,11 @@ alt + t
 
 # Launch Program
 alt + d
-    dmenu_run
+    launcher
+
+# Open File Browser
+alt + r
+    urxvt -e ranger
 
 # Open Browser
 alt + b

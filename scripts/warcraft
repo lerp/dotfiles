@@ -1,0 +1,3 @@
+#!/bin/bash
+
+wine "/media/Spinpoint/Games/World of Warcraft/Wow-64.exe" -opengl

@@ -1,9 +1,11 @@
 #!/bin/zsh
 
+read WIDTH <<< $(xrandr | grep '*' | awk -Fx '{print $1}')
+
 FONT_FAMILY="-*-clean-medium-r-*-*-12-*-*-*-c-*-*-1"
-WIDTH=1677
 HEIGHT=20
-PADDING=5
+PADDING=3
+WIDTH=$((WIDTH - 2 * PADDING))
 COLOUR_BG=${BLACK/#\#/\#FF}
 COLOUR_FG=${WHITE/#\#/\#FF}
 COLOUR_HI=${BLUE/#\#/\#FF}

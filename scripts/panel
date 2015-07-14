@@ -9,7 +9,7 @@ fi
 . panel-settings
 
 if [[ $(hostname) == 'pc' ]]; then
-    bspc config -m DFP10 top_padding $(($HEIGHT + $PADDING))
+    bspc config -m DFP5 top_padding $(($HEIGHT + $PADDING))
 else
     bspc config top_padding $(($HEIGHT + $PADDING))
 fi

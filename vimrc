@@ -1,23 +1,9 @@
 "=============================================================================="
+
 " OPTIONS {{{
-
-" Disable vi compatibility
-set nocompatible
-
-" Enable syntax highlighting
-syntax on
-
+"
 " Change the vertical fill character to a space
 set fillchars=vert:\
-
-" Highlight search matches as we type
-set incsearch
-
-" Remove the buffer when a file is closed
-set nohidden
-
-" Fix backspace in insert mode
-set backspace=indent,eol,start
 
 " Makes tab completion like bash's
 set wildmenu
@@ -25,12 +11,11 @@ set wildmode=list:longest
 set wildignore+=*.sw?   " Ignore swp files
 
 " Set the leader key
-let mapleader = "-"
-let maplocalleader = "_"
+let mapleader = " "
+let maplocalleader = " "
 
 " Change indent settings
 set shiftwidth=4 softtabstop=4 tabstop=8 expandtab
-set smarttab
 set autoindent
 set formatoptions=qrcn1
 
@@ -107,7 +92,6 @@ noremap <F1> <ESC>
 vnoremap <silent> <leader>cu "+x
 vnoremap <silent> <leader>cp "+y
 nnoremap <silent> <leader>p :silent! set paste<CR>"+p:set nopaste<CR>
-inoremap <silent> <leader>p <ESC>:silent! set paste<CR>"+p:set nopaste<CR>a
 
 " Select all
 nnoremap <silent> <leader>a ggvG$
@@ -172,34 +156,28 @@ nnoremap <silent> <leader>os :!mupdf slides.pdf &<CR><CR>
 
 " VUNDLE {{{
 
-set nocompatible
-filetype off
+call plug#begin('~/.vim/plugged')
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+Plug 'Raimondi/delimitMate'
+Plug 'Valloric/YouCompleteMe'
+Plug 'ap/vim-css-color'
+Plug 'bling/vim-airline'
+Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
+Plug 'digitaltoad/vim-jade'
+Plug 'docunext/closetag.vim'
+Plug 'groenewege/vim-less'
+Plug 'junegunn/vim-after-object'
+Plug 'kien/ctrlp.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'tfnico/vim-gradle'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-sensible'
+Plug 'vim-scripts/SearchComplete'
+Plug 'vim-scripts/camelcasemotion'
+Plug 'vim-scripts/octave.vim--'
 
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'Raimondi/delimitMate'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'bling/vim-airline'
-Plugin 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
-Plugin 'docunext/closetag.vim'
-Plugin 'gmarik/Vundle.vim'
-Plugin 'groenewege/vim-less'
-Plugin 'kien/ctrlp.vim'
-Plugin 'kien/rainbow_parentheses.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/syntastic'
-Plugin 'tpope/vim-fugitive'
-Plugin 'vim-scripts/SearchComplete'
-Plugin 'vim-scripts/camelcasemotion'
-Plugin 'vim-scripts/css_color.vim'
-Plugin 'vim-scripts/octave.vim--'
-Plugin 'tfnico/vim-gradle'
-Plugin 'digitaltoad/vim-jade'
-
-call vundle#end()
-filetype plugin indent on
+call plug#end()
 
 " }}}
 " YCM {{{
@@ -224,6 +202,7 @@ nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
+let g:syntastic_cpp_checker = ['cpplint']
 let g:syntastic_java_checker = 'javac'
 let g:syntastic_javascript_checkers = ['jshint']
 
@@ -279,7 +258,7 @@ set laststatus=2
 let g:airline_powerline_fonts = 1
 " }}}
 " CTRLP {{{
-let g:ctrlp_custom_ignore = '\v\.(class)$'
+let g:ctrlp_custom_ignore = '\v\.(class|o)$'
 " }}}
 
 " }}}
@@ -420,7 +399,7 @@ augroup filetype_cpp
     autocmd!
 
     " Set file syntax to C++11
-    autocmd FileType hpp,cpp call SetupCppEnvironment()
+    autocmd FileType cpp call SetupCppEnvironment()
 
     " Use tabs instead of spaces in makefiles
     autocmd FileType makefile setlocal noexpandtab
@@ -592,3 +571,4 @@ augroup filetype_txt
 augroup END
 
 " }}}
+
