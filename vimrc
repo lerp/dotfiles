@@ -1,5 +1,124 @@
 "=============================================================================="
+" PLUGINS {{{
 
+" PLUGGED {{{
+
+silent! if plug#begin('~/.vim/plugged')
+    Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer' }
+    Plug 'Yggdroot/indentLine', {'for': 'python', 'on': 'IndentLinesEnable' }
+    Plug 'ap/vim-css-color'
+    Plug 'bling/vim-airline'
+    Plug 'chrisbra/unicode.vim'
+    Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
+    Plug 'digitaltoad/vim-jade'
+    Plug 'docunext/closetag.vim'
+    Plug 'groenewege/vim-less'
+    Plug 'junegunn/rainbow_parentheses.vim'
+    Plug 'junegunn/vim-after-object'
+    Plug 'kien/ctrlp.vim'
+    Plug 'scrooloose/nerdtree'
+    Plug 'scrooloose/syntastic'
+    Plug 'tfnico/vim-gradle'
+    Plug 'tpope/vim-endwise'
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-sensible'
+    Plug 'tpope/vim-surround'
+    Plug 'vim-scripts/SearchComplete'
+    Plug 'vim-scripts/camelcasemotion'
+    Plug 'vim-scripts/octave.vim--'
+
+    call plug#end()
+endif
+
+" }}}
+" YCM {{{
+
+let g:ycm_confirm_extra_conf = 0
+
+" }}}
+" NERDTREE {{{
+
+augroup NERDTreeCommands
+    autocmd!
+    " autocmd VimEnter * NERDTree
+augroup END
+
+let NERDTreeChDirMode=1
+let NERDTreeIgnore=['\.pyc$']
+nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
+
+" }}}
+" SYNTASTIC {{{
+
+let g:syntastic_check_on_open=1
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11'
+let g:syntastic_cpp_checker = ['cpplint']
+let g:syntastic_java_checker = 'javac'
+let g:syntastic_javascript_checkers = ['jshint']
+
+" }}}
+" LINEPULSE {{{
+
+let g:linepulse_start = "guibg"
+let g:linepulse_end   = "#606060"
+let g:linepulse_steps = 30
+let g:linepulse_time  = 100
+
+" }}}
+" ECLIM {{{
+
+set rtp+=~/.vim/eclim
+let g:EclimCompletionMethod = 'omnifunc'
+
+" Mapping to start eclim sever.
+nnoremap <silent> <leader>se :!/usr/share/eclipse/eclimd -b<CR>
+
+" }}}
+" SUPERTAB {{{
+
+let g:SuperTabDefaultCompletionType = "<C-N>"
+
+" }}}
+" EASYMOTION {{{
+map <Space> <Plug>(easymotion-s2)
+" }}}
+" TOMORROW {{{
+if filereadable($HOME . "/.vim/plugged/tomorrow-theme/vim/colors/Tomorrow-Night.vim")
+    silent! colorscheme Tomorrow-Night
+
+    " Highlight anything that goes over 81 columns
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+    match OverLength /\%>81v.\+/
+
+    autocmd! GuiEnter * set vb t_vb=
+endif
+" }}}
+" DELMITMATE {{{
+let delimitMate_expand_cr = 1
+" }}}
+" AIRLINE {{{
+if has("gui_running")
+    set guifont=DejaVu\ Sans\ Mono\ 9
+
+    " Get rid of all the window decoration that comes with gvim
+    set guioptions=
+endif
+
+set laststatus=2
+let g:airline_powerline_fonts = 1
+" }}}
+" CTRLP {{{
+let g:ctrlp_custom_ignore = '\v\.(class|o)$'
+" }}}
+" VIM-AFTER-OBJECT {{{
+autocmd VimEnter * call after_object#enable('=', ':', '-', '#', ' ')
+" }}}
+
+
+" }}}
+"=============================================================================="
 " OPTIONS {{{
 "
 " Change the vertical fill character to a space
@@ -152,117 +271,6 @@ nnoremap <silent> <leader>os :!mupdf slides.pdf &<CR><CR>
 
 " }}}
 "=============================================================================="
-" PLUGINS {{{
-
-" VUNDLE {{{
-
-call plug#begin('~/.vim/plugged')
-
-Plug 'Raimondi/delimitMate'
-Plug 'Valloric/YouCompleteMe'
-Plug 'ap/vim-css-color'
-Plug 'bling/vim-airline'
-Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
-Plug 'digitaltoad/vim-jade'
-Plug 'docunext/closetag.vim'
-Plug 'groenewege/vim-less'
-Plug 'junegunn/vim-after-object'
-Plug 'kien/ctrlp.vim'
-Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
-Plug 'tfnico/vim-gradle'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-sensible'
-Plug 'vim-scripts/SearchComplete'
-Plug 'vim-scripts/camelcasemotion'
-Plug 'vim-scripts/octave.vim--'
-
-call plug#end()
-
-" }}}
-" YCM {{{
-
-let g:ycm_confirm_extra_conf = 0
-
-" }}}
-" NERDTREE {{{
-
-augroup NERDTreeCommands
-    autocmd!
-    " autocmd VimEnter * NERDTree
-augroup END
-
-let NERDTreeChDirMode=1
-let NERDTreeIgnore=['\.pyc$']
-nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
-
-" }}}
-" SYNTASTIC {{{
-
-let g:syntastic_check_on_open=1
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11'
-let g:syntastic_cpp_checker = ['cpplint']
-let g:syntastic_java_checker = 'javac'
-let g:syntastic_javascript_checkers = ['jshint']
-
-" }}}
-" LINEPULSE {{{
-
-let g:linepulse_start = "guibg"
-let g:linepulse_end   = "#606060"
-let g:linepulse_steps = 30
-let g:linepulse_time  = 100
-
-" }}}
-" ECLIM {{{
-
-set rtp+=~/.vim/eclim
-let g:EclimCompletionMethod = 'omnifunc'
-
-" Mapping to start eclim sever.
-nnoremap <silent> <leader>se :!/usr/share/eclipse/eclimd -b<CR>
-
-" }}}
-" SUPERTAB {{{
-
-let g:SuperTabDefaultCompletionType = "<C-N>"
-
-" }}}
-" EASYMOTION {{{
-map <Space> <Plug>(easymotion-s2)
-" }}}
-" TOMORROW {{{
-if filereadable($HOME . "/.vim/bundle/tomorrow-theme/vim/colors/Tomorrow-Night.vim")
-    colorscheme Tomorrow-Night
-
-    " Highlight anything that goes over 81 columns
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-    match OverLength /\%>81v.\+/
-
-    autocmd! GuiEnter * set vb t_vb=
-endif
-" }}}
-" DELMITMATE {{{
-let delimitMate_expand_cr = 1
-" }}}
-" AIRLINE {{{
-if has("gui_running")
-    set guifont=Liberation\ Mono\ 9
-
-    " Get rid of all the window decoration that comes with gvim
-    set guioptions=
-endif
-
-set laststatus=2
-let g:airline_powerline_fonts = 1
-" }}}
-" CTRLP {{{
-let g:ctrlp_custom_ignore = '\v\.(class|o)$'
-" }}}
-
-" }}}
-"=============================================================================="
 " CUSTOM FUNCTIONS {{{
 
 " Show the folding column
@@ -377,13 +385,19 @@ augroup END
 
 " A command for inserting a C guard macro
 function! CppGuard()
-    let defname = "_" . toupper(expand("%:t:r")) .
-\                 "_" . toupper(expand("%:e")) . "_"
+    let directories = split(expand("%:h"), '/') +
+                    \ [ expand("%:t:r"), expand("%:e") ]
 
-    call setline(1, "#ifndef " . defname)
-    call setline(2, "#define " . defname)
+    if !empty(directories) && directories[0] ==? "src"
+        call remove(directories, 0)
+    endif
+
+    let guard = toupper(join(directories, "_")) . "_"
+
+    call setline(1, "#ifndef " . guard)
+    call setline(2, "#define " . guard)
     call setline(3, "")
-    call setline(4, "#endif //" . defname)
+    call setline(4, "#endif // " . guard)
 endfunction
 
 function! SetupCppEnvironment()
@@ -402,10 +416,10 @@ augroup filetype_cpp
     autocmd FileType cpp call SetupCppEnvironment()
 
     " Use tabs instead of spaces in makefiles
-    autocmd FileType makefile setlocal noexpandtab
+    autocmd FileType make setlocal noexpandtab
 
     " Insert the Cpp Guard whenever a header file is opened
-    autocmd BufNewFile *.(h|hpp) call CppGuard()
+    autocmd BufNewFile *.h,*.hpp call CppGuard()
 augroup END
 
 " }}}

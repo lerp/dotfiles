@@ -10,7 +10,9 @@ files = {
     'vimrc':     '~/.vimrc',
     'Xdefaults': '~/.Xdefaults',
     'xinitrc':   '~/.xinitrc',
-    'zshrc':     '~/.zshrc'
+    'zshrc':     '~/.zshrc',
+    'gtkrc-2.0': '~/.gtkrc-2.0',
+    'zshenv':    '~/.zshenv',
 }
 
 for source, target in files.items():

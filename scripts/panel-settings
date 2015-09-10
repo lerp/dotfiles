@@ -2,7 +2,7 @@
 
 read WIDTH <<< $(xrandr | grep '*' | awk -Fx '{print $1}')
 
-FONT_FAMILY="-*-clean-medium-r-*-*-12-*-*-*-c-*-*-1"
+FONT_FAMILY="xft:DejaVu Sans:pixelsize=11"
 HEIGHT=20
 PADDING=3
 WIDTH=$((WIDTH - 2 * PADDING))

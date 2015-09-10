@@ -48,6 +48,7 @@ insert_sudo() {
 
 zle -N insert-sudo insert_sudo
 
-# Hooks
-source /usr/share/doc/pkgfile/command-not-found.zsh
-
+# Aliases
+alias poweroff="sudo poweroff"
+alias reboot="sudo reboot"
+alias shutdown="sudo shutdown"

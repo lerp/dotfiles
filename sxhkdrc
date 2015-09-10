@@ -46,7 +46,7 @@ alt + r
 
 # Open Browser
 alt + b
-    google-chrome-beta
+    firefox
 
 # Restart sxhkd
 alt + shift + r

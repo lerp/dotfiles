@@ -1,19 +1,15 @@
 #!/bin/zsh
 
 # Kill any existing bars
-if [ $(pgrep -cx bar) -gt 0 ]; then
-    kill -USR1 $(pgrep -x bar)
+if [ $(pgrep -cx lemonbar) -gt 0 ]; then
+    kill -USR1 $(pgrep -x lemonbar)
 fi
 
 # Load Settings
 . panel-settings
 
-if [[ $(hostname) == 'pc' ]]; then
-    bspc config -m DFP5 top_padding $(($HEIGHT + $PADDING))
-else
-    bspc config top_padding $(($HEIGHT + $PADDING))
-fi
+bspc config top_padding $(($HEIGHT + $PADDING))
 
 panel-text | \
-bar -g $(($WIDTH - $PADDING))x$HEIGHT+$PADDING+$PADDING -f "$FONT_FAMILY" -u 3 \
-    -F "$COLOUR_FG" -B "$COLOUR_BG" &
+lemonbar -g $(($WIDTH - $PADDING))x$HEIGHT+$PADDING+$PADDING -f "$FONT_FAMILY" \
+         -u 3 -F "$COLOUR_FG" -B "$COLOUR_BG" &
