@@ -52,3 +52,4 @@ zle -N insert-sudo insert_sudo
 alias poweroff="sudo poweroff"
 alias reboot="sudo reboot"
 alias shutdown="sudo shutdown"
+alias sudo="sudo -E"

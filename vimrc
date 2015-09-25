@@ -16,6 +16,7 @@ silent! if plug#begin('~/.vim/plugged')
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'junegunn/vim-after-object'
     Plug 'kien/ctrlp.vim'
+    Plug 'myusuf3/numbers.vim'
     Plug 'scrooloose/nerdtree'
     Plug 'scrooloose/syntastic'
     Plug 'tfnico/vim-gradle'
@@ -172,8 +173,7 @@ set colorcolumn=+1
 " Ignore case when doing searches
 set smartcase
 
-" Relative numbers are so useful with commands like :m!
-set relativenumber
+" Preceed each line with it's line number
 set number
 
 " Don't automatically change to the working directory to the file's directory
@@ -586,3 +586,56 @@ augroup END
 
 " }}}
 
+" }}}
+"=============================================================================="
+" VIM TRAINING {{{
+" I want to break the habit of pressing hjkl repeatedly to navigate, the below
+" is to help break the bad pattern.
+" Taken from http://jeetworks.org/from-acolyte-to-adept-the-next-step-after-nop-ing-arrow-keys/
+
+function! DisableIfNonCounted(move) range
+    if v:count
+        return a:move
+    else
+        " You can make this do something annoying like:
+           " echoerr "Count required!"
+           " sleep 2
+        return ""
+    endif
+endfunction
+
+function! SetDisablingOfBasicMotionsIfNonCounted(on)
+    let keys_to_disable = get(g:, "keys_to_disable_if_not_preceded_by_count", ["j", "k", "l", "h"])
+    if a:on
+        for key in keys_to_disable
+            execute "noremap <expr> <silent> " . key . " DisableIfNonCounted('" . key . "')"
+        endfor
+        let g:keys_to_disable_if_not_preceded_by_count = keys_to_disable
+        let g:is_non_counted_basic_motions_disabled = 1
+    else
+        for key in keys_to_disable
+            try
+                execute "unmap " . key
+            catch /E31:/
+            endtry
+        endfor
+        let g:is_non_counted_basic_motions_disabled = 0
+    endif
+endfunction
+
+function! ToggleDisablingOfBasicMotionsIfNonCounted()
+    let is_disabled = get(g:, "is_non_counted_basic_motions_disabled", 0)
+    if is_disabled
+        call SetDisablingOfBasicMotionsIfNonCounted(0)
+    else
+        call SetDisablingOfBasicMotionsIfNonCounted(1)
+    endif
+endfunction
+
+command! ToggleDisablingOfNonCountedBasicMotions :call ToggleDisablingOfBasicMotionsIfNonCounted()
+command! DisableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(1)
+command! EnableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(0)
+
+DisableNonCountedBasicMotions
+
+" }}}
