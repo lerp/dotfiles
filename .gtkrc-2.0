@@ -1,1 +1,5 @@
-/home/james/dotfiles/gtkrc-2.0
+style "vimfix" {
+    bg[NORMAL] = "#1D1F21"
+}
+
+widget "vim-main-window.*GtkForm" style "vimfix"
