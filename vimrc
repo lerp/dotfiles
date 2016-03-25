@@ -12,7 +12,9 @@ silent! if plug#begin('~/.vim/plugged')
     Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
     Plug 'digitaltoad/vim-jade'
     Plug 'docunext/closetag.vim'
+    Plug 'evidens/vim-twig', {'for': 'twig'}
     Plug 'groenewege/vim-less'
+    Plug 'hail2u/vim-css3-syntax'
     Plug 'junegunn/rainbow_parentheses.vim'
     Plug 'junegunn/vim-after-object'
     Plug 'kien/ctrlp.vim'
@@ -116,7 +118,6 @@ let g:ctrlp_custom_ignore = '\v\.(class|o)$'
 " VIM-AFTER-OBJECT {{{
 autocmd VimEnter * call after_object#enable('=', ':', '-', '#', ' ')
 " }}}
-
 
 " }}}
 "=============================================================================="
@@ -593,49 +594,49 @@ augroup END
 " is to help break the bad pattern.
 " Taken from http://jeetworks.org/from-acolyte-to-adept-the-next-step-after-nop-ing-arrow-keys/
 
-function! DisableIfNonCounted(move) range
-    if v:count
-        return a:move
-    else
-        " You can make this do something annoying like:
-           " echoerr "Count required!"
-           " sleep 2
-        return ""
-    endif
-endfunction
-
-function! SetDisablingOfBasicMotionsIfNonCounted(on)
-    let keys_to_disable = get(g:, "keys_to_disable_if_not_preceded_by_count", ["j", "k", "l", "h"])
-    if a:on
-        for key in keys_to_disable
-            execute "noremap <expr> <silent> " . key . " DisableIfNonCounted('" . key . "')"
-        endfor
-        let g:keys_to_disable_if_not_preceded_by_count = keys_to_disable
-        let g:is_non_counted_basic_motions_disabled = 1
-    else
-        for key in keys_to_disable
-            try
-                execute "unmap " . key
-            catch /E31:/
-            endtry
-        endfor
-        let g:is_non_counted_basic_motions_disabled = 0
-    endif
-endfunction
-
-function! ToggleDisablingOfBasicMotionsIfNonCounted()
-    let is_disabled = get(g:, "is_non_counted_basic_motions_disabled", 0)
-    if is_disabled
-        call SetDisablingOfBasicMotionsIfNonCounted(0)
-    else
-        call SetDisablingOfBasicMotionsIfNonCounted(1)
-    endif
-endfunction
-
-command! ToggleDisablingOfNonCountedBasicMotions :call ToggleDisablingOfBasicMotionsIfNonCounted()
-command! DisableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(1)
-command! EnableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(0)
-
-DisableNonCountedBasicMotions
+" function! DisableIfNonCounted(move) range
+"     if v:count
+"         return a:move
+"     else
+"         " You can make this do something annoying like:
+"            " echoerr "Count required!"
+"            " sleep 2
+"         return ""
+"     endif
+" endfunction
+" 
+" function! SetDisablingOfBasicMotionsIfNonCounted(on)
+"     let keys_to_disable = get(g:, "keys_to_disable_if_not_preceded_by_count", ["j", "k", "l", "h"])
+"     if a:on
+"         for key in keys_to_disable
+"             execute "noremap <expr> <silent> " . key . " DisableIfNonCounted('" . key . "')"
+"         endfor
+"         let g:keys_to_disable_if_not_preceded_by_count = keys_to_disable
+"         let g:is_non_counted_basic_motions_disabled = 1
+"     else
+"         for key in keys_to_disable
+"             try
+"                 execute "unmap " . key
+"             catch /E31:/
+"             endtry
+"         endfor
+"         let g:is_non_counted_basic_motions_disabled = 0
+"     endif
+" endfunction
+" 
+" function! ToggleDisablingOfBasicMotionsIfNonCounted()
+"     let is_disabled = get(g:, "is_non_counted_basic_motions_disabled", 0)
+"     if is_disabled
+"         call SetDisablingOfBasicMotionsIfNonCounted(0)
+"     else
+"         call SetDisablingOfBasicMotionsIfNonCounted(1)
+"     endif
+" endfunction
+" 
+" command! ToggleDisablingOfNonCountedBasicMotions :call ToggleDisablingOfBasicMotionsIfNonCounted()
+" command! DisableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(1)
+" command! EnableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(0)
+" 
+" DisableNonCountedBasicMotions
 
 " }}}
