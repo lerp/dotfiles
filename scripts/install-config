@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+git clone --bare git@github.com:maddisoj/dotfiles.git $HOME/.cfg
+alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+config checkout
+config config --local status.showUntrackFiles no
