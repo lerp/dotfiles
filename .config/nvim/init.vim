@@ -1,13 +1,13 @@
-"=============================================================================="
 " PLUGINS {{{
 
 " PLUGGED {{{
 
-silent! if plug#begin('~/.vim/plugged')
-    Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer' }
-    Plug 'Yggdroot/indentLine', {'for': 'python', 'on': 'IndentLinesEnable' }
+silent! if plug#begin('~/.config/nvim/plugged')
+    Plug 'Valloric/YouCompleteMe', {'do': 'python2 install.py --clang-completer'}
     Plug 'ap/vim-css-color'
+    Plug 'benekastah/neomake'
     Plug 'bling/vim-airline'
+    Plug 'chaoren/vim-wordmotion'
     Plug 'chrisbra/unicode.vim'
     Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
     Plug 'digitaltoad/vim-jade'
@@ -16,11 +16,9 @@ silent! if plug#begin('~/.vim/plugged')
     Plug 'groenewege/vim-less'
     Plug 'hail2u/vim-css3-syntax'
     Plug 'junegunn/rainbow_parentheses.vim'
-    Plug 'junegunn/vim-after-object'
     Plug 'kien/ctrlp.vim'
     Plug 'myusuf3/numbers.vim'
     Plug 'scrooloose/nerdtree'
-    Plug 'scrooloose/syntastic'
     Plug 'tfnico/vim-gradle'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
@@ -28,46 +26,37 @@ silent! if plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-sensible'
     Plug 'tpope/vim-surround'
     Plug 'vim-scripts/SearchComplete'
-    Plug 'vim-scripts/camelcasemotion'
     Plug 'vim-scripts/octave.vim--'
+    Plug 'wellle/targets.vim'
 
     call plug#end()
 endif
 
 " }}}
+
 " YCM {{{
 
 let g:ycm_confirm_extra_conf = 0
 
 " }}}
-" NERDTREE {{{
+" NEOMAKE {{{
 
-augroup NERDTreeCommands
-    autocmd!
-    " autocmd VimEnter * NERDTree
-augroup END
+let g:neomake_cpp_enable_makers = ['clang']
+
+" }}}
+" VIM-AIRLINE {{{
+
+let g:airline_powerline_fonts = 1
+
+" }}}
+" TOMORROW-THEME {{{
+silent! colorscheme Tomorrow-Night
+" }}}
+" NERDTREE {{{
 
 let NERDTreeChDirMode=1
 let NERDTreeIgnore=['\.pyc$']
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
-
-" }}}
-" SYNTASTIC {{{
-
-let g:syntastic_check_on_open=1
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11'
-let g:syntastic_cpp_checker = ['cpplint']
-let g:syntastic_java_checker = 'javac'
-let g:syntastic_javascript_checkers = ['jshint']
-
-" }}}
-" LINEPULSE {{{
-
-let g:linepulse_start = "guibg"
-let g:linepulse_end   = "#606060"
-let g:linepulse_steps = 30
-let g:linepulse_time  = 100
 
 " }}}
 " ECLIM {{{
@@ -84,50 +73,22 @@ nnoremap <silent> <leader>se :!/usr/share/eclipse/eclimd -b<CR>
 let g:SuperTabDefaultCompletionType = "<C-N>"
 
 " }}}
-" EASYMOTION {{{
-map <Space> <Plug>(easymotion-s2)
-" }}}
-" TOMORROW {{{
-if filereadable($HOME . "/.vim/plugged/tomorrow-theme/vim/colors/Tomorrow-Night.vim")
-    silent! colorscheme Tomorrow-Night
-
-    " Highlight anything that goes over 81 columns
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-    match OverLength /\%>81v.\+/
-
-    autocmd! GuiEnter * set vb t_vb=
-endif
-" }}}
 " DELMITMATE {{{
 let delimitMate_expand_cr = 1
-" }}}
-" AIRLINE {{{
-if has("gui_running")
-    set guifont=DejaVu\ Sans\ Mono\ 9
-
-    " Get rid of all the window decoration that comes with gvim
-    set guioptions=
-endif
-
-set laststatus=2
-let g:airline_powerline_fonts = 1
 " }}}
 " CTRLP {{{
 let g:ctrlp_custom_ignore = '\v\.(class|o)$'
 " }}}
-" VIM-AFTER-OBJECT {{{
-autocmd VimEnter * call after_object#enable('=', ':', '-', '#', ' ')
 " }}}
-
-" }}}
-"=============================================================================="
 " OPTIONS {{{
-"
-" Change the vertical fill character to a space
-set fillchars=vert:\
+
+" Always have a status line
+set laststatus=2
+
+" Change the vertical fill character to nothing
+set fillchars=
 
 " Makes tab completion like bash's
-set wildmenu
 set wildmode=list:longest
 set wildignore+=*.sw?   " Ignore swp files
 
@@ -137,7 +98,6 @@ let maplocalleader = " "
 
 " Change indent settings
 set shiftwidth=4 softtabstop=4 tabstop=8 expandtab
-set autoindent
 set formatoptions=qrcn1
 
 set autowrite
@@ -148,9 +108,9 @@ set mouse=a
 set backup
 set noswapfile  " Swap files are annoying
 
-set undodir=~/.vim/tmp/undo//
-set backupdir=~/.vim/tmp/backup//
-set directory=~/.vim/tmp/swap//
+set undodir=~/.config/nvim/tmp/undo//
+set backupdir=~/.config/nvim/tmp/backup//
+set directory=~/.config/nvim/tmp/swap//
 
 " Create the directories for vim's files
 if !isdirectory(expand(&undodir))
@@ -189,10 +149,8 @@ set showbreak=↪
 
 " Disable annoying beeping
 set noerrorbells
-set vb t_vb=
 
 " }}}
-"=============================================================================="
 " MAPPINGS {{{
 
 " Remap % to the tab key. It's just easier!
@@ -211,21 +169,20 @@ noremap <F1> <ESC>
 " Cut, Copy & Paste to clipboard
 vnoremap <silent> <leader>cu "+x
 vnoremap <silent> <leader>cp "+y
-nnoremap <silent> <leader>p :silent! set paste<CR>"+p:set nopaste<CR>
+nnoremap <silent> <leader>p  "+p
 
 " Select all
 nnoremap <silent> <leader>a ggvG$
 
-" Open vimrc
-nnoremap <silent> <leader>ev :vsplit ~/dotfiles/vimrc<CR>
-
 " Cycle through tabs
 nnoremap <silent> <leader>h :tabprevious<CR>
 nnoremap <silent> <leader>l :tabnext<CR>
-nnoremap <silent> <C-H> :wincmd h<CR>
-nnoremap <silent> <C-L> :wincmd l<CR>
-nnoremap <silent> <C-K> :wincmd k<CR>
-nnoremap <silent> <C-J> :wincmd j<CR>
+
+" Navigate splits
+nnoremap <silent> <C-h> <C-W>h
+nnoremap <silent> <C-l> <C-W>l
+nnoremap <silent> <C-k> <C-W>k
+nnoremap <silent> <C-j> <C-W>j
 
 " Create new tab
 nnoremap <silent> <C-t> :tabnew<CR>
@@ -237,6 +194,9 @@ nnoremap <silent> <leader>O O<Esc>j
 " Centers the screen on the matched search
 noremap n nzz
 noremap N Nzz
+
+" Clear hlsearch
+nnoremap <silent> <leader>ch :nohlsearch<CR>
 
 " Easy save, out of habit
 noremap <silent> <C-S> :w<CR>
@@ -261,17 +221,29 @@ nnoremap <leader>cw mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 " Mapping for easier spell checking.
 nnoremap <leader>s ea<C-X><C-S>
 
-" Open terminal in current working directory
-nnoremap <silent> <leader>t :!urxvt &<CR><CR>
-
 " Sort the current paragraph
 nnoremap <silent> <leader>sp vip:sort<CR>
 
-" Open slides in directory
-nnoremap <silent> <leader>os :!mupdf slides.pdf &<CR><CR>
+if has('nvim')
+    " Open init.vim
+    nnoremap <silent> <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
+    nnoremap <silent> <leader>rv :source ~/.config/nvim/init.vim<CR>
+
+    " Make jk exit in terminal too
+    tnoremap jk <C-\><C-n>
+
+    " Open a terminal at the bottom
+    nnoremap <leader>t :botright 10split +terminal<CR><C-\><C-n>:silent! set wfh<CR>
+else
+    " Open init.vim
+    nnoremap <silent> <leader>ev :vsplit ~/.vimrc<CR>
+    nnoremap <silent> <leader>rv :source ~/.vimrc<CR>
+
+    " Open terminal in current working directory
+    nnoremap <silent> <leader>t :!urxvt &<CR><CR>
+endif
 
 " }}}
-"=============================================================================="
 " CUSTOM FUNCTIONS {{{
 
 " Show the folding column
@@ -328,7 +300,6 @@ function! s:get_visual_selection()
 endfunction
 
 " }}}
-"=============================================================================="
 " LANGUAGE SETTINGS {{{
 
 " Java --------------------------------------------------------------------- {{{
@@ -524,59 +495,6 @@ augroup END
 
 function! SetupTextEnvironment()
     setlocal spell
-    setlocal encoding=utf-8
-
-    iabbrev <silent> <buffer> _0 ₀
-    iabbrev <silent> <buffer> weierp ℘
-
-    " Greek alphabet
-    iabbrev <silent> <buffer> alpha α
-    iabbrev <silent> <buffer> beta β
-    iabbrev <silent> <buffer> gamma γ
-    iabbrev <silent> <buffer> delta δ
-    iabbrev <silent> <buffer> Delta Δ
-    iabbrev <silent> <buffer> epsilon ε
-    iabbrev <silent> <buffer> zeta ζ
-    iabbrev <silent> <buffer> eta η
-    iabbrev <silent> <buffer> theta θ
-    iabbrev <silent> <buffer> iota ι
-    iabbrev <silent> <buffer> kappa κ
-    iabbrev <silent> <buffer> lambda λ
-    iabbrev <silent> <buffer> mu μ
-    iabbrev <silent> <buffer> nu ν
-    iabbrev <silent> <buffer> xi ξ
-    iabbrev <silent> <buffer> pi π
-    iabbrev <silent> <buffer> rho ρ
-    iabbrev <silent> <buffer> Sigma Σ
-    iabbrev <silent> <buffer> sigma σ
-    iabbrev <silent> <buffer> tau τ
-    iabbrev <silent> <buffer> upsilon υ
-    iabbrev <silent> <buffer> phi φ
-    iabbrev <silent> <buffer> chi χ
-    iabbrev <silent> <buffer> psi Ψ
-    iabbrev <silent> <buffer> omega ω
-    iabbrev <silent> <buffer> Omega Ω
-
-    " Math Symbols
-    iabbrev <silent> <buffer> +- ±
-    iabbrev <silent> <buffer> *. ·
-    iabbrev <silent> <buffer> !divide ÷
-    iabbrev <silent> <buffer> !sqrt √
-    iabbrev <silent> <buffer> !integral ∫
-    iabbrev <silent> <buffer> !cintegral ∮
-    iabbrev <silent> <buffer> !therefore ∴
-    iabbrev <silent> <buffer> !because ∵
-    iabbrev <silent> <buffer> !propto ∝
-    iabbrev <silent> <buffer> !infinity ∞
-    iabbrev <silent> <buffer> !equiv ≡
-
-    " Logic Symbols
-    iabbrev <silent> <buffer> !iff ↔
-    iabbrev <silent> <buffer> !implies →
-    iabbrev <silent> <buffer> !leq ≤
-    iabbrev <silent> <buffer> !geq ≥
-    iabbrev <silent> <buffer> !lesspref ≺
-    iabbrev <silent> <buffer> !morepref ≻
 endfunction
 
 augroup filetype_txt
@@ -586,57 +504,5 @@ augroup filetype_txt
 augroup END
 
 " }}}
-
-" }}}
-"=============================================================================="
-" VIM TRAINING {{{
-" I want to break the habit of pressing hjkl repeatedly to navigate, the below
-" is to help break the bad pattern.
-" Taken from http://jeetworks.org/from-acolyte-to-adept-the-next-step-after-nop-ing-arrow-keys/
-
-" function! DisableIfNonCounted(move) range
-"     if v:count
-"         return a:move
-"     else
-"         " You can make this do something annoying like:
-"            " echoerr "Count required!"
-"            " sleep 2
-"         return ""
-"     endif
-" endfunction
-" 
-" function! SetDisablingOfBasicMotionsIfNonCounted(on)
-"     let keys_to_disable = get(g:, "keys_to_disable_if_not_preceded_by_count", ["j", "k", "l", "h"])
-"     if a:on
-"         for key in keys_to_disable
-"             execute "noremap <expr> <silent> " . key . " DisableIfNonCounted('" . key . "')"
-"         endfor
-"         let g:keys_to_disable_if_not_preceded_by_count = keys_to_disable
-"         let g:is_non_counted_basic_motions_disabled = 1
-"     else
-"         for key in keys_to_disable
-"             try
-"                 execute "unmap " . key
-"             catch /E31:/
-"             endtry
-"         endfor
-"         let g:is_non_counted_basic_motions_disabled = 0
-"     endif
-" endfunction
-" 
-" function! ToggleDisablingOfBasicMotionsIfNonCounted()
-"     let is_disabled = get(g:, "is_non_counted_basic_motions_disabled", 0)
-"     if is_disabled
-"         call SetDisablingOfBasicMotionsIfNonCounted(0)
-"     else
-"         call SetDisablingOfBasicMotionsIfNonCounted(1)
-"     endif
-" endfunction
-" 
-" command! ToggleDisablingOfNonCountedBasicMotions :call ToggleDisablingOfBasicMotionsIfNonCounted()
-" command! DisableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(1)
-" command! EnableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(0)
-" 
-" DisableNonCountedBasicMotions
 
 " }}}
