@@ -9,7 +9,6 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'bling/vim-airline'
     Plug 'chaoren/vim-wordmotion'
     Plug 'chrisbra/unicode.vim'
-    Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
     Plug 'digitaltoad/vim-jade'
     Plug 'docunext/closetag.vim'
     Plug 'evidens/vim-twig', {'for': 'twig'}
@@ -28,6 +27,7 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'vim-scripts/SearchComplete'
     Plug 'vim-scripts/octave.vim--'
     Plug 'wellle/targets.vim'
+    Plug 'w0ng/vim-hybrid'
 
     call plug#end()
 endif
@@ -49,23 +49,15 @@ let g:neomake_cpp_enable_makers = ['clang']
 let g:airline_powerline_fonts = 1
 
 " }}}
-" TOMORROW-THEME {{{
-silent! colorscheme Tomorrow-Night
+" HYBRID {{{
+set background=dark
+silent! colorscheme hybrid
 " }}}
 " NERDTREE {{{
 
 let NERDTreeChDirMode=1
 let NERDTreeIgnore=['\.pyc$']
 nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
-
-" }}}
-" ECLIM {{{
-
-set rtp+=~/.vim/eclim
-let g:EclimCompletionMethod = 'omnifunc'
-
-" Mapping to start eclim sever.
-nnoremap <silent> <leader>se :!/usr/share/eclipse/eclimd -b<CR>
 
 " }}}
 " SUPERTAB {{{
