@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+FONT_FAMILY="-*-clean-medium-r-*-*-12-*-*-*-c-*-*-1"
+WIDTH=1360
+HEIGHT=20
+PADDING=5
+COLOUR_BG=${BLACK/#\#/\#FF}
+COLOUR_FG=${WHITE/#\#/\#FF}
+COLOUR_HI=${BLUE/#\#/\#FF}
