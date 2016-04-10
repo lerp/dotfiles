@@ -1,4 +1,4 @@
-USER_SCRIPTS=~/dotfiles/scripts
+USER_SCRIPTS=$HOME/scripts
 
 if test ! -z "${PATH##*$USER_SCRIPTS*}"; then
     export PATH=$PATH:$USER_SCRIPTS
