@@ -15,3 +15,4 @@ export GREEN=#B5BD68
 export AQUA=#8ABEB7
 export BLUE=#81A2BE
 export PURPLE=#B294BB
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib

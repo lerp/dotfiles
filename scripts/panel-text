@@ -2,28 +2,33 @@
 
 . panel-settings
 
-hi="%{F$COLOUR_HI}"
-ul="%{U$COLOUR_HI}"
+highlight() {
+    echo -n "%{F$BLUE}$@%{F-}"
+}
+
+rarrow() {
+    echo -n "%{F$1 B$2}%{T2}%{T-}%{F-B-}"
+}
+
+rgroup() {
+    echo -n "$(rarrow $2 $1)%{F$1 B$2} ${@:3} %{F-B-}";
+}
 
 clock() {
-    date +"%d/%m/%Y %H:%M"
+    rgroup $BLACK $BLUE $(date +"%H:%M  %d/%m/%Y")
 }
 
 desktops() {
     desktops=""
 
     for monitor in $(bspc query -M); do
-        desktops+="${hi}[ %{F-}"
-
         for desktop in $(bspc query -D -m $monitor); do
             if [[ $desktop -eq $(bspc query -D -d focused) ]]; then
-                desktops+="$hi$ul$desktop%{F-U-} "
+                desktops+=$(highlight " %{T2}●%{T-} ")
             else
-                desktops+="$desktop "
+                desktops+=" %{T2}●%{T-} "
             fi
         done
-
-        desktops="${desktops%?}$hi ]%{F-}"
     done
 
     echo "$desktops"
@@ -61,9 +66,16 @@ while true; do
     buf+="%{c}"
     buf+="$(desktops)"
     buf+="%{r}"
-    buf+="$(wifi) | "
-    buf+="$(battery) | "
-    buf+="$(clock) "
+
+    if [[ -d /sys/class/net/wlo1/ ]]; then
+        buf+="$(wifi) | "
+    fi
+
+    if [[ -d /sys/class/power_supply/BAT0/ ]]; then
+        buf+="$(battery) | "
+    fi
+
+    buf+="$(clock)"
 
     echo $buf
     sleep 1

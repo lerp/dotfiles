@@ -22,6 +22,7 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'rust-lang/rust.vim'
     Plug 'scrooloose/nerdtree'
     Plug 'tfnico/vim-gradle'
+    Plug 'tikhomirov/vim-glsl'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-fugitive'
@@ -55,7 +56,7 @@ let g:neomake_cpp_clang_maker = {
     \'exe': 'clang++',
     \'args': [
         \'-std=c++1z',
-        \'-Isrc/',
+        \'-Isrc/main/',
         \'-Wall',
         \'-Wextra',
         \'-pedantic',
