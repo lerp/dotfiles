@@ -1,17 +1,3 @@
-# Swap focus with mouse
-~button1
-    bspc pointer -g focus
-
-# Move and Resize with mouse
-alt + button{1-3}
-    bspc pointer -g {move,resize_side,resize_corner}
-
-alt + !button{1-3}
-    bspc pointer -t %i %i
-
-alt + @button{1-3}
-    bspc pointer -u
-
 # Close Current Window
 alt + shift + q
     bspc node -c
@@ -30,7 +16,11 @@ alt + shift + {1-9,0}
 
 # Mark this window for splitting along respective axis
 alt + {h,j,k,l}
-    bspc node -p {west,south,north,east}
+    bspc node -p \~{west,south,north,east}
+
+# Switch focus
+alt + shift + {h,l}
+    bspc node -f {prev,next}
 
 # Open Terminal
 alt + t
@@ -43,10 +33,6 @@ alt + d
 # Open File Browser
 alt + r
     urxvt -e ranger
-
-# Open Browser
-alt + b
-    google-chrome-beta
 
 # Restart sxhkd
 alt + shift + r

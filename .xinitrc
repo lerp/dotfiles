@@ -10,7 +10,6 @@ fi
 
 VBoxClient-all
 sxhkd &
-panel &
 wmname LG3D &
 
 exec bspwm
