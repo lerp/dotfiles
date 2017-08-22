@@ -1,7 +1,0 @@
-#!/bin/zsh
-
-FONT_1="DejaVu Sans Mono for Powerline:size=8"
-FONT_2="DejaVu Sans Mono for Powerline:size=10"
-WIDTH=$(xrandr | grep '*' | awk -Fx '{ print $1 }')
-HEIGHT=16
-PADDING=0

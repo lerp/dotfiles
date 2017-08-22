@@ -3,79 +3,19 @@
 " PLUGGED {{{
 
 silent! if plug#begin('~/.config/nvim/plugged')
-    Plug 'Rip-Rip/clang_complete'
-    Plug 'Shougo/deoplete.nvim'
     Plug 'ap/vim-css-color'
-    Plug 'benekastah/neomake'
-    Plug 'bling/vim-airline'
-    Plug 'chaoren/vim-wordmotion'
-    Plug 'chrisbra/unicode.vim'
-    Plug 'digitaltoad/vim-jade'
-    Plug 'docunext/closetag.vim'
     Plug 'ervandew/supertab'
-    Plug 'evidens/vim-twig', {'for': 'twig'}
     Plug 'groenewege/vim-less'
     Plug 'hail2u/vim-css3-syntax'
-    Plug 'junegunn/rainbow_parentheses.vim'
-    Plug 'kien/ctrlp.vim'
-    Plug 'myusuf3/numbers.vim'
-    Plug 'rust-lang/rust.vim'
     Plug 'scrooloose/nerdtree'
-    Plug 'tfnico/vim-gradle'
     Plug 'tikhomirov/vim-glsl'
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-endwise'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-sensible'
-    Plug 'tpope/vim-surround'
-    Plug 'vim-scripts/SearchComplete'
-    Plug 'vim-scripts/octave.vim--'
     Plug 'w0ng/vim-hybrid'
-    Plug 'wellle/targets.vim'
 
     call plug#end()
 endif
 
 " }}}
 
-" CLANG_COMPLETE {{{
-
-let g:clang_library_path = "/usr/lib/"
-
-" }}}
-" DEOPLETE {{{
-
-let g:deoplete#enable_at_startup = 1
-
-" }}}
-" NEOMAKE {{{
-
-let g:neomake_cpp_enabled_makers = ['clang']
-let g:neomake_cpp_clang_maker = {
-    \'exe': 'clang++',
-    \'args': [
-        \'-std=c++1z',
-        \'-Isrc/main/',
-        \'-Wall',
-        \'-Wextra',
-        \'-pedantic',
-        \'-Wno-sign-conversion',
-        \'-Wno-unused-parameter',
-        \'-Wno-unused-variable',
-        \'-fsyntax-only'
-    \],
-\}
-
-autocmd! BufWritePost * Neomake
-autocmd! BufRead * Neomake
-
-" }}}
-" VIM-AIRLINE {{{
-
-let g:airline_powerline_fonts = 1
-
-" }}}
 " HYBRID {{{
 set background=dark
 silent! colorscheme hybrid
@@ -91,12 +31,6 @@ nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
 
 let g:SuperTabDefaultCompletionType = "<C-N>"
 
-" }}}
-" DELMITMATE {{{
-let delimitMate_expand_cr = 1
-" }}}
-" CTRLP {{{
-let g:ctrlp_custom_ignore = '\v.*\.(class|o|d)$'
 " }}}
 "
 " }}}

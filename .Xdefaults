@@ -1,42 +1,50 @@
 ! Terminal Colours {{{
-*foreground:   #C5C8C6
-*background:   #1D1F21
-! black/dark grey
-*color0:       #000000
-*color8:       #666666
-! red
-*color1:       #912226
-*color9:       #CC6666
-! green
-*color2:       #778900
-*color10:      #B5BD68
-! yellow
-*color3:       #AE7B00
-*color11:      #F0C674
-! blue
-*color4:       #1D2594
-*color12:      #81A2BE
-! magenta
-*color5:       #682A9B
-*color13:      #B294BB
-! cyan
-*color6:       #2B6651
-*color14:      #8ABEB7
-! white/light grey
-*color7:       #929593
-*color15:      #ECEBEC
+! special
+*.foreground:   #c5c8c6
+*.background:   #1d1f21
+*.cursorColor:  #c5c8c6
 
-*cursorColor:  #AEAFAD
+! black
+*.color0:       #282a2e
+*.color8:       #373b41
+
+! red
+*.color1:       #a54242
+*.color9:       #cc6666
+
+! green
+*.color2:       #8c9440
+*.color10:      #b5bd68
+
+! yellow
+*.color3:       #de935f
+*.color11:      #f0c674
+
+! blue
+*.color4:       #5f819d
+*.color12:      #81a2be
+
+! magenta
+*.color5:       #85678f
+*.color13:      #b294bb
+
+! cyan
+*.color6:       #5e8d87
+*.color14:      #8abeb7
+
+! white
+*.color7:       #707880
+*.color15:      #c5c8c6
 ! }}}
 
 ! URxvt Settings {{{
 URxvt*termName: screen-256color
-URxvt*background: #1D1F21
+URxvt*background: #1C1C1C
 URxvt*foreground: #C5C8C6
-URxvt*font: xft:Hermit:pixelsize=11:style=medium
-URxvt*boldFont: xft:Hermit:bold:pixelsize=11:style=medium
-URxvt*italicFont: xft:Hermit:italic:pixelsize=11:style=medium
-URxvt*boldItalicFont: xft:Hermit:bold:italic:pixelsize=11:style=medium
+URxvt*font: xft:Source Code Pro:pixelsize=11
+URxvt*boldFont: xft:Source Code Pro:bold:pixelsize=11
+URxvt*italicFont: xft:Source Code Pro:italic:pixelsize=11
+URxvt*boldItalicFont: xft:Source Code Pro:bold:italic:pixelsize=11
 URxvt*borderless: true
 URxvt*scrollBar: false
 URxvt*visualBell: false

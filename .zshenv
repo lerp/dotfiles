@@ -4,15 +4,15 @@ if test ! -z "${PATH##*$USER_SCRIPTS*}"; then
     export PATH=$PATH:$USER_SCRIPTS
 fi
 
-export WHITE=#C5C8C6
-export BLACK=#1D1F21
-export DARK_GRAY=#373B41
-export LIGHT_GRAY=#969896
-export RED=#CC6666
-export ORANGE=#DE935F
-export YELLOW=#F0C674
-export GREEN=#B5BD68
-export AQUA=#8ABEB7
-export BLUE=#81A2BE
-export PURPLE=#B294BB
+export BLACK=#1c1c1c
+export WHITE=#c5c8c6
+export RED=#cc6666
+export ORANGE=#de935f
+export YELLOW=#f0c674
+export GREEN=#b5bd68
+export AQUA=#8abeb7
+export BLUE=#81a2be
+export PURPLE=#b294bb
+export GREY=#282a23
+export LIGHT_GREY=#5F5F5F
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
