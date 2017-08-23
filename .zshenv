@@ -13,6 +13,6 @@ export GREEN=#b5bd68
 export AQUA=#8abeb7
 export BLUE=#81a2be
 export PURPLE=#b294bb
-export GREY=#282a23
+export GREY=#282a2e
 export LIGHT_GREY=#5F5F5F
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
