@@ -3,36 +3,44 @@
 " PLUGGED {{{
 
 silent! if plug#begin('~/.config/nvim/plugged')
-    Plug 'ap/vim-css-color'
-    Plug 'ervandew/supertab'
-    Plug 'groenewege/vim-less'
-    Plug 'hail2u/vim-css3-syntax'
-    Plug 'scrooloose/nerdtree'
-    Plug 'tikhomirov/vim-glsl'
     Plug 'w0ng/vim-hybrid'
+    Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
+    Plug 'roxma/nvim-completion-manager'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+    Plug 'junegunn/fzf.vim'
+    Plug 'lervag/vimtex'
 
     call plug#end()
 endif
 
 " }}}
 
-" HYBRID {{{
+" vim-hybrid {{{
 set background=dark
 silent! colorscheme hybrid
 " }}}
-" NERDTREE {{{
+" LanguageClient-neovim {{{
 
-let NERDTreeChDirMode=1
-let NERDTreeIgnore=['\.pyc$']
-nnoremap <silent> <F2> :NERDTreeToggle<CR>:wincmd =<CR>
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_settingsPath = '/home/james/.config/nvim/settings.json'
+let g:LanguageClient_serverCommands = {
+\   'cpp': ['cquery', '--language-server']
+\ }
+let g:LanguageClient_loadSettings = 1
+
+nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 
 " }}}
-" SUPERTAB {{{
-
-let g:SuperTabDefaultCompletionType = "<C-N>"
-
+" neovim-completion-manager {{{
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisble() ? "\<C-p>" : "\<S-Tab>"
 " }}}
-"
+" fzf {{{
+nnoremap <C-P> :FZF<CR>
+" }}}
+
 " }}}
 " OPTIONS {{{
 
