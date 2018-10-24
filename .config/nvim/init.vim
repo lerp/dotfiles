@@ -4,11 +4,19 @@
 
 silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'w0ng/vim-hybrid'
-    Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-    Plug 'roxma/nvim-completion-manager'
+	Plug 'airblade/vim-gitgutter'
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh'
+        \ }
+    Plug 'ncm2/ncm2'
+    Plug 'roxma/nvim-yarp'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
     Plug 'junegunn/fzf.vim'
     Plug 'lervag/vimtex'
+	Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-unimpaired'
 
     call plug#end()
 endif
@@ -22,27 +30,60 @@ silent! colorscheme hybrid
 " LanguageClient-neovim {{{
 
 let g:LanguageClient_autoStart = 1
+let g:LanguageClient_diagnosticsList = "Location"
 let g:LanguageClient_settingsPath = '/home/james/.config/nvim/settings.json'
 let g:LanguageClient_serverCommands = {
-\   'cpp': ['cquery', '--language-server']
+\   'cpp': ['cquery',
+\       '--language-server',
+\       '--log-file=/tmp/cquery.log',
+\       '--init={"cacheDirectory":"/tmp/cquery/"}'
+\   ]
 \ }
 let g:LanguageClient_loadSettings = 1
 
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+nnoremap <silent> <F12> :call LanguageClient_textDocument_definition({'gotoCmd': 'split'})<CR>
 nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 
 " }}}
-" neovim-completion-manager {{{
+" ncm2 {{{
+" Enable tabbing through popup menu
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisble() ? "\<C-p>" : "\<S-Tab>"
+
+" Automatically enable NCM2 for every buffer
+augroup NCM2
+	autocmd!
+	autocmd BufEnter * call ncm2#enable_for_buffer()
+	autocmd TextChangedI * call ncm2#auto_trigger()
+augroup END
+
+" noinsert: prevent automatic text injection
+" menuone: Shows the popup menu even if there's only one match
+" noselect: prevents automatic selection
+set completeopt=noinsert,menuone,noselect
 " }}}
 " fzf {{{
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nnoremap <C-P> :FZF<CR>
+" }}}
+" vim-gitgutter {{{
+highlight link GitGutterAdd DiffAdd
+highlight link GitGutterChange DiffChange
+highlight link GitGutterDelete DiffDelete
+highlight link GitGutterChangeDelete DiffChangeDelete
 " }}}
 
 " }}}
 " OPTIONS {{{
+
+set grepprg=ag\ --vimgrep\ $*
+set grepformat=%f:%l:%c:%m
+
+set cursorline
+set relativenumber
+
+set shortmess+=c
 
 " Always have a status line
 set laststatus=2
@@ -59,7 +100,7 @@ let mapleader = " "
 let maplocalleader = " "
 
 " Change indent settings
-set shiftwidth=4 softtabstop=4 tabstop=8 expandtab
+set shiftwidth=4 softtabstop=4 tabstop=4 noexpandtab
 set formatoptions=qrcn1
 
 set autowrite
@@ -171,11 +212,11 @@ nnoremap L $
 inoremap jk <esc>l
 inoremap <esc> <nop>
 
-" Always do a very magic search
-nnoremap / /\v
-nnoremap ? ?\v
-vnoremap / /\v
-vnoremap ? ?\v
+" Always do a case insensitive very magic search
+nnoremap / /\v\c
+nnoremap ? ?\v\c
+vnoremap / /\v\c
+vnoremap ? ?\v\c
 
 " Clean trailing whitespace
 nnoremap <leader>cw mz:%s/\s\+$//<cr>:let @/=''<cr>`z
@@ -203,6 +244,11 @@ else
 
     " Open terminal in current working directory
     nnoremap <silent> <leader>t :!urxvt &<CR><CR>
+endif
+
+if &diff
+	map <leader>r :diffget REMOTE<CR>
+	map <leader>l :diffget LOCAL<CR>
 endif
 
 " }}}
@@ -339,9 +385,6 @@ function! SetupCppEnvironment()
     setlocal makeprg=make
 
     syntax on
-
-    nnoremap <buffer> <F5> :wa<CR>:make!<CR>
-    nnoremap <buffer> <F12> :YcmCompleter GoTo<CR>
 endfunction
 
 augroup filetype_cpp

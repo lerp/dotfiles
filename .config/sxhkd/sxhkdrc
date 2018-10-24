@@ -24,7 +24,7 @@ alt + shift + {h,l}
 
 # Open Terminal
 alt + t
-    urxvt
+    alacritty
 
 # Launch Program
 alt + d
@@ -32,7 +32,7 @@ alt + d
 
 # Open File Browser
 alt + r
-    urxvt -e ranger
+    alacritty -e ranger
 
 # Restart sxhkd
 alt + shift + r

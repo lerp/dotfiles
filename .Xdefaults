@@ -41,10 +41,10 @@
 URxvt*termName: screen-256color
 URxvt*background: #1C1C1C
 URxvt*foreground: #C5C8C6
-URxvt*font: xft:Source Code Pro:pixelsize=11
-URxvt*boldFont: xft:Source Code Pro:bold:pixelsize=11
-URxvt*italicFont: xft:Source Code Pro:italic:pixelsize=11
-URxvt*boldItalicFont: xft:Source Code Pro:bold:italic:pixelsize=11
+URxvt*font: xft:Source Code Pro:pixelsize=11,xft:DejaVu Sans Mono:pixelsize=11
+URxvt*boldFont: xft:Source Code Pro:bold:pixelsize=11,xft:DejaVu Sans Mono:bold:pixelsize=11
+URxvt*italicFont: xft:Source Code Pro:italic:pixelsize=11,xft:DejaVu Sans Mono:italic:pixelsize=11
+URxvt*boldItalicFont: xft:Source Code Pro:bold:italic:pixelsize=11,xft:DejaVu Sans Mono:bold:italic:pixelsize=11
 URxvt*borderless: true
 URxvt*scrollBar: false
 URxvt*visualBell: false

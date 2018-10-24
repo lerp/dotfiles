@@ -2,6 +2,13 @@ rename web
 dete
 delete 
 mkdir config
-delete
 cd  
 cd :q
+abort
+rena
+cd
+
+rename uMemoryBuffer.cpp
+rename uMemoryBuffer.h
+mkdir object
+delete
