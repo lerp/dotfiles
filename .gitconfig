@@ -1,0 +1,18 @@
+[user]
+	email = james.maddison@v-nova.com
+	name = James Maddison
+[core]
+	editor = nvim
+[alias]
+	ch = checkout
+	st = status
+	untracked = ls-files --others --exclude-standard
+	conflicts = diff --name-only --diff-filter=U
+[diff]
+	tool = vimdiff
+[difftool "vimdiff"]
+	cmd = nvim -d $LOCAL $REMOTE
+[merge]
+	tool = vimdiff
+[mergetool "vimdiff"]
+	cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
