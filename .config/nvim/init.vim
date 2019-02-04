@@ -3,22 +3,23 @@
 " PLUGGED {{{
 
 silent! if plug#begin('~/.config/nvim/plugged')
-    Plug 'w0ng/vim-hybrid'
-	Plug 'airblade/vim-gitgutter'
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh'
-        \ }
-    Plug 'ncm2/ncm2'
-    Plug 'roxma/nvim-yarp'
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-    Plug 'junegunn/fzf.vim'
-    Plug 'lervag/vimtex'
+	Plug 'w0ng/vim-hybrid'
+	Plug 'autozimu/LanguageClient-neovim', {
+		\ 'branch': 'next',
+		\ 'do': 'bash install.sh'
+		\ }
+	Plug 'ncm2/ncm2'
+	Plug 'roxma/nvim-yarp'
+	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+	Plug 'junegunn/fzf.vim'
+	Plug 'lervag/vimtex'
+	Plug 'szw/vim-maximizer'
 	Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-unimpaired'
+	Plug 'tpope/vim-eunuch'
+	Plug 'tpope/vim-fugitive'
+	Plug 'tpope/vim-unimpaired'
 
-    call plug#end()
+	call plug#end()
 endif
 
 " }}}
@@ -49,7 +50,7 @@ nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 " ncm2 {{{
 " Enable tabbing through popup menu
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisble() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Automatically enable NCM2 for every buffer
 augroup NCM2
@@ -67,15 +68,15 @@ set completeopt=noinsert,menuone,noselect
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nnoremap <C-P> :FZF<CR>
 " }}}
-" vim-gitgutter {{{
-highlight link GitGutterAdd DiffAdd
-highlight link GitGutterChange DiffChange
-highlight link GitGutterDelete DiffDelete
-highlight link GitGutterChangeDelete DiffChangeDelete
+" Maximizer {{{
+nnoremap <leader>m :MaximizerToggle<CR>
 " }}}
 
 " }}}
 " OPTIONS {{{
+
+" Don't remove/add an new line character at ends of files
+set nofixendofline
 
 set grepprg=ag\ --vimgrep\ $*
 set grepformat=%f:%l:%c:%m
@@ -131,7 +132,7 @@ set scrolloff=3
 
 " Make the editor effectively 80 columns wide
 set nowrap
-set textwidth=80
+set textwidth=120
 set colorcolumn=+1
 
 " Ignore case when doing searches
@@ -238,12 +239,16 @@ if has('nvim')
     " Open a terminal at the bottom
     nnoremap <leader>t :botright 10split +terminal<CR><C-\><C-n>:silent! set wfh<CR>
 else
-    " Open init.vim
+    " Open .vimrc
     nnoremap <silent> <leader>ev :vsplit ~/.vimrc<CR>
     nnoremap <silent> <leader>rv :source ~/.vimrc<CR>
 
     " Open terminal in current working directory
     nnoremap <silent> <leader>t :!urxvt &<CR><CR>
+endif
+
+if exists('g:gui_oni')
+    au FileType fzf tnoremap <nowait><buffer> <esc> <c-g>
 endif
 
 if &diff

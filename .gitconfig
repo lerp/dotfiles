@@ -9,10 +9,10 @@
 	untracked = ls-files --others --exclude-standard
 	conflicts = diff --name-only --diff-filter=U
 [diff]
-	tool = vimdiff
-[difftool "vimdiff"]
+	tool = nvimdiff
+[difftool "nvimdiff"]
 	cmd = nvim -d $LOCAL $REMOTE
 [merge]
-	tool = vimdiff
-[mergetool "vimdiff"]
+	tool = nvimdiff
+[mergetool "nvimdiff"]
 	cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'

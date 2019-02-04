@@ -4,7 +4,7 @@ alt + shift + q
 
 # Toggle Floating/Fullscreen state
 alt + {space,f}
-    bspc node -t {floating,fullscreen}
+    bspc node -t \~{floating,fullscreen}
 
 # Focus the respective desktop
 alt + {1-9,0}
