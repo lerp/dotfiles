@@ -38,9 +38,15 @@ let g:LanguageClient_serverCommands = {
 \       '--language-server',
 \       '--log-file=/tmp/cquery.log',
 \       '--init={"cacheDirectory":"/tmp/cquery/"}'
+\   ],
+\   'c': ['cquery',
+\       '--language-server',
+\       '--log-file=/tmp/cquery.log',
+\       '--init={"cacheDirectory":"/tmp/cquery/"}'
 \   ]
 \ }
 let g:LanguageClient_loadSettings = 1
+let g:LanguageClient_useVirtualText = 0
 
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
 nnoremap <silent> <F12> :call LanguageClient_textDocument_definition({'gotoCmd': 'split'})<CR>

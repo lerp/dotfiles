@@ -3,6 +3,8 @@ HISTSIZE=1000
 SAVEHIST=1000
 
 export ZSH="/home/james/.oh-my-zsh"
+export VISUAL=nvim
+export EDITOR=nvim
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -15,7 +17,6 @@ plugins=(
     pip
 )
 
-bindkey '^R' fzf-history-widget
 bindkey '^S' insert-sudo
 zle -N insert-sudo insert_sudo
 
