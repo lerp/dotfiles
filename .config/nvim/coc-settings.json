@@ -1,0 +1,11 @@
+{
+	"coc.preferences.hoverTarget": "float",
+	"coc.preferences.jumpCommand": "drop",
+    "languageserver": {
+        "clangd": {
+            "command": "clangd",
+            "filetypes": ["c", "cpp"],
+            "rootPatterns": ["compile_commands.json"]
+        }
+    }
+}
