@@ -1,11 +1,15 @@
 {
-	"coc.preferences.hoverTarget": "float",
-	"coc.preferences.jumpCommand": "drop",
+    "coc.preferences.jumpCommand": "split",
     "languageserver": {
         "clangd": {
-            "command": "clangd",
-            "filetypes": ["c", "cpp"],
-            "rootPatterns": ["compile_commands.json"]
+            "command": "ccls",
+            "filetypes": ["c", "cpp", "h", "hpp"],
+            "rootPatterns": ["compile_commands.json"],
+            "initializationOptions": {
+                "cache": {
+                    "directory": "/tmp/ccls"
+                }
+            }
         }
     }
 }

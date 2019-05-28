@@ -27,20 +27,26 @@ silent! colorscheme hybrid
 " }}}
 " coc.nvim {{{
 " Enable tabbing through popup menu
-inoremap <expr> <CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <silent><expr> <C-n> coc#refresh()
 
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-
 nmap <silent> <leader>rn <Plug>(coc-rename)
+" imap <silent> <C-l> <Plug>(coc-snippets-expand)
+" imap <silent> <C-j> <Plug>(coc-snippets-expand-jump)
+" vmap <silent> <C-j> <Plug>(coc-snippets-select)
 
 " noinsert: prevent automatic text injection
 " menuone: Shows the popup menu even if there's only one match
 " noselect: prevents automatic selection
 set completeopt=noinsert,menuone,noselect
+set updatetime=300
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " }}}
 " fzf {{{
