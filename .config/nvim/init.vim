@@ -4,6 +4,9 @@
 
 silent! if plug#begin('~/.config/nvim/plugged')
 
+    Plug 'google/vim-codefmt'
+    Plug 'google/vim-maktaba'
+    Plug 'itchyny/lightline.vim'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
     Plug 'junegunn/fzf.vim'
     Plug 'lervag/vimtex'
@@ -15,6 +18,7 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-unimpaired'
     Plug 'w0ng/vim-hybrid'
+    Plug 'vim-scripts/vim-gradle'
 
     call plug#end()
 endif
@@ -25,12 +29,37 @@ endif
 set background=dark
 silent! colorscheme hybrid
 " }}}
+" lightline.vim {{{
+set noshowmode
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status'
+      \ },
+      \ }
+
+augroup coc_lightline
+    autocmd!
+    autocmd User CocStatusChange, CocDiagnosticChange call lightline#update()
+augroup end
+
+" }}}
 " coc.nvim {{{
 " Enable tabbing through popup menu
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <silent><expr> <C-n> coc#refresh()
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : 
+                    \ <SID>check_back_space() ? "\<Tab>" :
+                    \ coc#refresh()
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col -1] =~# '\s'
+endfunction
 
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gi <Plug>(coc-implementation)
@@ -46,18 +75,35 @@ nmap <silent> <leader>rn <Plug>(coc-rename)
 set completeopt=noinsert,menuone,noselect
 set updatetime=300
 
-autocmd CursorHold * silent call CocActionAsync('highlight')
+highlight CocUnderline cterm=undercurl
+highlight CocErrorHighlight ctermfg=red cterm=underline guifg=red gui=undercurl
+highlight CocWarningHighlight ctermfg=yellow guifg=yellow cterm=underline guifg=yellow gui=undercurl
+
+augroup coc_actions
+    autocmd!
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+    autocmd CursorHold * silent call CocActionAsync('showSignatureHelp')
+augroup end
 
 " }}}
 " fzf {{{
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nnoremap <C-P> :FZF<CR>
 " }}}
+" vim-codefmt {{{
+nnoremap <silent> == :FormatLines<CR>
+vnoremap <silent> = :FormatLines<CR>
+nnoremap <silent> <leader>fc :FormatCode<CR>
+" }}}
 
 " }}}
 " OPTIONS {{{
 
+set termguicolors
 set signcolumn=yes
+
+" Disable automatic comments
+set formatoptions-=o
 
 " Don't remove/add an new line character at ends of files
 set nofixendofline
@@ -85,7 +131,7 @@ let mapleader = " "
 let maplocalleader = " "
 
 " Change indent settings
-set shiftwidth=4 softtabstop=4 tabstop=4 noexpandtab
+set shiftwidth=4 softtabstop=4 tabstop=4 expandtab
 set formatoptions=qrcn1
 
 set autowrite
@@ -116,7 +162,7 @@ set scrolloff=3
 
 " Make the editor effectively 80 columns wide
 set nowrap
-set textwidth=80
+set textwidth=100
 set colorcolumn=+1
 
 " Ignore case when doing searches
@@ -242,17 +288,6 @@ endif
 
 " }}}
 " CUSTOM FUNCTIONS {{{
-
-" Show the folding column
-function! FoldColumnToggle()
-    if &foldcolumn
-        setlocal foldcolumn=0
-    else
-        setlocal foldcolumn=4
-    endif
-endfunction
-
-nnoremap <leader>f :call FoldColumnToggle()<cr>
 
 " Make all parent directorys and save the file
 function! DirectorySave()
@@ -405,8 +440,6 @@ augroup END
 " Python ------------------------------------------------------------------- {{{
 
 function! SetupPythonEnvironment()
-    let g:syntastic_python_checkers = [ "flake8" ]
-
     nnoremap <buffer> <silent> <F5> :wa<CR>:!python %<CR>
 endfunction
 
@@ -496,6 +529,20 @@ augroup filetype_txt
     autocmd!
 
     autocmd FileType text call SetupTextEnvironment()
+augroup END
+
+" }}}
+
+" {{{ cmake
+"
+function! SetupCmakeEnvironment()
+    setlocal noexpandtab
+endfunction
+
+augroup filetype_txt
+    autocmd!
+
+    autocmd FileType cmake call SetupCmakeEnvironment()
 augroup END
 
 " }}}
