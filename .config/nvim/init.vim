@@ -297,13 +297,6 @@ endfunction
 
 nnoremap <leader>w :call DirectorySave()<cr>
 
-function! JavaProject()
-    NERDTreeClose
-    ProjectsTree
-endfunction
-
-nnoremap <leader>jp :call JavaProject()<cr>
-
 augroup FileCommands
     autocmd!
 
@@ -320,44 +313,8 @@ augroup FileCommands
     autocmd BufLeave,FocusLost * silent! wall
 augroup END
 
-function! s:get_visual_selection()
-    " Why is this not a built-in Vim script function?!
-    let [lnum1, col1] = getpos("'<")[1:2]
-    let [lnum2, col2] = getpos("'>")[1:2]
-    let lines = getline(lnum1, lnum2)
-    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
-    let lines[0] = lines[0][col1 - 1:]
-
-    return join(lines, "\n")
-endfunction
-
 " }}}
 " LANGUAGE SETTINGS {{{
-
-" Java --------------------------------------------------------------------- {{{
-
-function! SetupJavaEnvironment()
-    set noautochdir
-    set path=./**
-
-    nnoremap <buffer> <F5> :wa<CR>:ProjectCD<CR>:!gradle run<CR>
-    nnoremap <buffer> <F6> :wa<CR>:ProjectCD<CR>:!gradle run -Pcurrent=%<CR>
-    nnoremap <buffer> <localleader>c 0i//<esc>
-    onoremap <buffer> ib  :<c-u>execute "normal! ?{\rms%hme`sv`e"<cr>
-    onoremap <buffer> in( :<c-u>normal! f(vi(<cr>
-    onoremap <buffer> il( :<c-u>normal! F)vi(<cr>
-
-    nnoremap <buffer> <silent> <localleader>i :JavaImportOrganize<CR>
-endfunction
-
-augroup filetype_java
-    autocmd!
-
-    " Set up mappings
-    autocmd FileType java call SetupJavaEnvironment()
-augroup END
-
-" }}}
 
 " Vim ---------------------------------------------------------------------- {{{
 
@@ -437,21 +394,6 @@ augroup END
 
 " }}}
 
-" Python ------------------------------------------------------------------- {{{
-
-function! SetupPythonEnvironment()
-    nnoremap <buffer> <silent> <F5> :wa<CR>:!python %<CR>
-endfunction
-
-augroup filetype_python
-    autocmd!
-
-    " Execute the file when in a sh file
-    autocmd FileType python call SetupPythonEnvironment()
-augroup END
-
-" }}}
-
 " Latex -------------------------------------------------------------------- {{{
 
 function! SetupLatexEnvironment()
@@ -467,73 +409,7 @@ augroup END
 
 " }}}
 
-" CSS ---------------------------------------------------------------------- {{{
-
-function! SetupCSSEnvironment()
-    nnoremap <buffer> <leader>S vi{:sort<CR>
-endfunction
-
-augroup filetype_css
-    autocmd!
-
-    autocmd FileType css,less call SetupCSSEnvironment()
-augroup END
-
-" }}}
-
-" JS ----------------------------------------------------------------------- {{{
-
-function! SetupJSEnvironment()
-    setlocal tabstop=2
-    setlocal shiftwidth=2
-    setlocal softtabstop=2
-endfunction
-
-augroup filetype_js
-    autocmd!
-
-    autocmd FileType js call SetupJSEnvironment()
-augroup END
-
-" }}}
-
-" Octave (Matlab) ---------------------------------------------------------- {{{
-
-function! RunInOctave(expression)
-    execute "!octave -q --eval '" . a:expression . "'"
-endfunction
-
-function! SetupOctaveEnvironment()
-    set filetype=octave
-
-    nnoremap <buffer> <F5> :wa<CR>:!octave -q "%"<CR>
-    nnoremap <buffer> <F6> :call RunInOctave(getline('.'))<CR>
-    vnoremap <buffer> <silent> <F6> :call RunInOctave(<SID>get_visual_selection())<CR>
-endfunction
-
-augroup filetype_m
-    autocmd!
-
-    autocmd FileType matlab call SetupOctaveEnvironment()
-augroup END
-
-" }}}
-
-" Text --------------------------------------------------------------------- {{{
-
-function! SetupTextEnvironment()
-    setlocal spell
-endfunction
-
-augroup filetype_txt
-    autocmd!
-
-    autocmd FileType text call SetupTextEnvironment()
-augroup END
-
-" }}}
-
-" {{{ cmake
+" {{{ CMake
 "
 function! SetupCmakeEnvironment()
     setlocal noexpandtab
