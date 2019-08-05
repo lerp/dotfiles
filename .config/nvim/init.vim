@@ -361,18 +361,8 @@ function! CppGuard()
     call setline(4, "#endif // " . guard)
 endfunction
 
-function! SetupCppEnvironment()
-    setlocal syntax=cpp11
-    setlocal makeprg=make
-
-    syntax on
-endfunction
-
 augroup filetype_cpp
     autocmd!
-
-    " Set file syntax to C++11
-    autocmd FileType cpp call SetupCppEnvironment()
 
     " Use tabs instead of spaces in makefiles
     autocmd FileType make setlocal noexpandtab
