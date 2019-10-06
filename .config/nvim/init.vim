@@ -32,20 +32,32 @@ silent! colorscheme hybrid
 " lightline.vim {{{
 set noshowmode
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status'
-      \ },
-      \ }
+    \ 'colorscheme': 'wombat',
+    \ 'active': {
+    \   'left': [
+    \      [ 'mode', 'paste' ],
+    \      [ 'git', 'cocstatus', 'readonly', 'filename', 'modified' ]
+    \   ],
+    \   'right': [
+    \      [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
+    \      [ 'blame' ]
+    \   ],
+    \ },
+    \ 'component_function': {
+    \   'cocstatus': 'coc#status',
+    \   'blame': 'LightlineGitBlame'
+    \ },
+\ }
 
 augroup coc_lightline
     autocmd!
     autocmd User CocStatusChange, CocDiagnosticChange call lightline#update()
 augroup end
+
+function! LightlightGitBlame() abort
+    let blame = get(b:, 'coc_git_blame', '')
+    return winwidth(0) > 120 ? blame : ''
+endfunction
 
 " }}}
 " coc.nvim {{{
@@ -257,6 +269,9 @@ nnoremap <leader>s ea<C-X><C-S>
 
 " Sort the current paragraph
 nnoremap <silent> <leader>sp vip:sort<CR>
+
+" Close the current tab
+nnoremap <silent> <leader>tc :tabclose<CR>
 
 if has('nvim')
     " Open init.vim

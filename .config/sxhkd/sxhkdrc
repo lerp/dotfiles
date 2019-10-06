@@ -37,3 +37,9 @@ alt + r
 # Restart sxhkd
 alt + shift + r
     pkill -USR1 -x sxhkd
+
+super + l
+    slimlock
+
+Print
+    scrot -s

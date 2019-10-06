@@ -6,10 +6,6 @@ export ZSH="/home/james/.oh-my-zsh"
 export VISUAL=nvim
 export EDITOR=nvim
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="bira"
 plugins=(
     autojump
@@ -17,7 +13,6 @@ plugins=(
     pip
 )
 
-bindkey '^S' insert-sudo
 zle -N insert-sudo insert_sudo
 
 insert_sudo() {
@@ -33,3 +28,8 @@ source /usr/share/fzf/key-bindings.zsh
 
 alias sudo="sudo -E"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+alias gdb="gdb -q"
+
+bindkey '^S' insert-sudo
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

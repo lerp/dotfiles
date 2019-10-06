@@ -11,4 +11,6 @@ rofi -show run \
      -color-window $BLACK,$GREY,$GREY \
      -color-normal $BLACK,$WHITE,$BLACK,$BLACK,$WHITE \
      -separator-style "solid" \
-     -hide-scrollbar
+     -hide-scrollbar \
+     -sorting-method fzf \
+     -sort

@@ -16,4 +16,4 @@ export PURPLE=#b294bb
 export GREY=#282a2e
 export LIGHT_GREY=#5F5F5F
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-export MONITOR=VGA-1
+export MONITOR=DVI-I-1

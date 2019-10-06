@@ -1,15 +1,13 @@
 {
-    "coc.preferences.jumpCommand": "split",
+    "coc.preferences.jumpCommand": "tab drop",
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "languageserver": {
         "clangd": {
-            "command": "ccls",
+            "command": "clangd",
             "filetypes": ["c", "cpp", "h", "hpp"],
-            "rootPatterns": ["compile_commands.json"],
-            "initializationOptions": {
-                "cache": {
-                    "directory": "/tmp/ccls"
-                }
-            }
+            "rootPatterns": ["compile_commands.json"]
         }
-    }
+    },
+    "java.errors.incompleteClasspath.severity": "ignore",
+    "git.enableGutters": false
 }
