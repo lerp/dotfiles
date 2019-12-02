@@ -10,7 +10,7 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
     Plug 'junegunn/fzf.vim'
     Plug 'lervag/vimtex'
-    Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install() }}
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'roxma/nvim-yarp'
     Plug 'szw/vim-maximizer'
     Plug 'tpope/vim-commentary'
@@ -106,6 +106,11 @@ nnoremap <C-P> :FZF<CR>
 nnoremap <silent> == :FormatLines<CR>
 vnoremap <silent> = :FormatLines<CR>
 nnoremap <silent> <leader>fc :FormatCode<CR>
+
+augroup codefmt_actions
+    autocmd!
+    autocmd BufRead .h,.cpp silent :AutoFormatBuffer
+augroup end
 " }}}
 
 " }}}
@@ -153,6 +158,12 @@ set mouse=a
 " Enable back ups
 set backup
 set noswapfile  " Swap files are annoying
+set autoread
+
+augroup autoread_load
+    au!
+    au FocusGained,BufEnter * silent! checktime
+augroup end
 
 set undodir=~/.config/nvim/tmp/undo//
 set backupdir=~/.config/nvim/tmp/backup//
@@ -384,6 +395,7 @@ augroup filetype_cpp
 
     " Insert the Cpp Guard whenever a header file is opened
     autocmd BufNewFile *.h,*.hpp call CppGuard()
+    autocmd FileType c,cpp AutoFormatBuffer 
 augroup END
 
 " }}}
