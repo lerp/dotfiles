@@ -24,7 +24,7 @@ alt + shift + {h,l}
 
 # Open Terminal
 alt + t
-    alacritty
+    alacritty -e tmux
 
 # Launch Program
 alt + d
@@ -33,6 +33,10 @@ alt + d
 # Open File Browser
 alt + r
     alacritty -e ranger
+
+" Open Web Browser
+alt + b
+    vivaldi-stable
 
 # Restart sxhkd
 alt + shift + r
