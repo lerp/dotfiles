@@ -312,6 +312,8 @@ if &diff
     map <leader>l :diffget LOCAL<CR>
 endif
 
+command Q q
+
 " }}}
 " CUSTOM FUNCTIONS {{{
 

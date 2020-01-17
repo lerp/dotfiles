@@ -33,3 +33,5 @@ alias gdb="gdb -q"
 bindkey '^S' insert-sudo
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+eval $(thefuck --alias)
