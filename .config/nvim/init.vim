@@ -409,19 +409,7 @@ augroup END
 
 " A command for inserting a C guard macro
 function! CppGuard()
-    let directories = split(expand("%:h"), '/') +
-                    \ [ expand("%:t:r"), expand("%:e") ]
-
-    if !empty(directories) && directories[0] ==? "src"
-        call remove(directories, 0)
-    endif
-
-    let guard = toupper(join(directories, "_")) . "_"
-
-    call setline(1, "#ifndef " . guard)
-    call setline(2, "#define " . guard)
-    call setline(3, "")
-    call setline(4, "#endif // " . guard)
+    call setline(1, "#pragma once")
 endfunction
 
 augroup filetype_cpp
