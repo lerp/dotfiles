@@ -25,6 +25,8 @@ bspc rule -a Thunderbird state=floating, locked=on
 bspc rule -a Yad state=floating
 bspc rule -a Slack state=floating
 bspc rule -a Playground state=floating
+bspc rule -a spotify sticky=on state=floating locked=on
+bspc rule -a scratchpad sticky=on state=floating hidden=on
 
 xsetroot -solid "#333333"
 $HOME/.config/polybar/launch.sh

@@ -1,13 +1,5 @@
 {
-    "coc.preferences.jumpCommand": "tab drop",
+    "coc.preferences.jumpCommand": "drop",
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
-    "languageserver": {
-        "clangd": {
-            "command": "clangd",
-            "filetypes": ["c", "cpp", "h", "hpp"],
-            "rootPatterns": ["compile_commands.json"]
-        }
-    },
-    "java.errors.incompleteClasspath.severity": "ignore",
-    "git.enableGutters": false
+    "java.errors.incompleteClasspath.severity": "ignore"
 }

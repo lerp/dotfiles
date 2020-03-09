@@ -17,8 +17,8 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-eunuch'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-unimpaired'
-    Plug 'w0ng/vim-hybrid'
     Plug 'vim-scripts/vim-gradle'
+    Plug 'w0ng/vim-hybrid'
 
     call plug#end()
 endif
@@ -77,6 +77,8 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> <leader>rn <Plug>(coc-rename)
+nmap <silent> <leader>d :CocList diagnostics<CR>
+nmap <silent> gh :CocCommand clangd.switchSourceHeader<CR>
 " imap <silent> <C-l> <Plug>(coc-snippets-expand)
 " imap <silent> <C-j> <Plug>(coc-snippets-expand-jump)
 " vmap <silent> <C-j> <Plug>(coc-snippets-select)
@@ -109,7 +111,7 @@ nnoremap <silent> <leader>fc :FormatCode<CR>
 
 augroup codefmt_actions
     autocmd!
-    autocmd BufRead .h,.cpp silent :AutoFormatBuffer
+    autocmd FileType h,c,cpp,py silent :AutoFormatBuffer
 augroup end
 " }}}
 
@@ -224,9 +226,9 @@ inoremap <silent> <Down> <Esc>gja
 noremap <F1> <ESC>
 
 " Cut, Copy & Paste to clipboard
-vnoremap <silent> <leader>cu "+x
-vnoremap <silent> <leader>cp "+y
-nnoremap <silent> <leader>p  "+p
+vnoremap <silent> <leader>x "+x
+vnoremap <silent> <leader>y "+y
+nnoremap <silent> <leader>p "+p
 
 " Select all
 nnoremap <silent> <leader>a ggvG$
@@ -312,7 +314,9 @@ if &diff
     map <leader>l :diffget LOCAL<CR>
 endif
 
-command Q q
+" Disable Ex mode
+nnoremap Q <nop>
+command! Q q
 
 " }}}
 " CUSTOM FUNCTIONS {{{
@@ -340,6 +344,37 @@ augroup FileCommands
     " Save whenever focus is lost
     autocmd BufLeave,FocusLost * silent! wall
 augroup END
+
+let s:session_loaded = 1
+let s:session_path = "~/.config/nvim/lastsession.vim"
+
+augroup autosession
+  " load last session on start
+  " Note: without 'nested' filetypes are not restored.
+  autocmd VimEnter * nested call s:session_vim_enter()
+  autocmd VimLeavePre * call s:session_vim_leave()
+augroup END
+
+function! s:session_vim_enter()
+    if bufnr('$') == 1 && bufname('%') == '' && !&mod && getline(1, '$') == ['']
+        execute 'silent source ' . s:session_path
+    else
+      let s:session_loaded = 0
+    endif
+endfunction
+
+function! s:session_vim_leave()
+  if s:session_loaded == 1
+    let sessionoptions = &sessionoptions
+    try
+        set sessionoptions-=options
+        set sessionoptions+=tabpages
+        execute 'mksession! ' . s:session_path
+    finally
+        let &sessionoptions = sessionoptions
+    endtry
+  endif
+endfunction
 
 " }}}
 " LANGUAGE SETTINGS {{{
@@ -397,7 +432,6 @@ augroup filetype_cpp
 
     " Insert the Cpp Guard whenever a header file is opened
     autocmd BufNewFile *.h,*.hpp call CppGuard()
-    autocmd FileType c,cpp AutoFormatBuffer 
 augroup END
 
 " }}}

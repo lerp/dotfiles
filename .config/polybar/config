@@ -31,7 +31,6 @@ border-bottom-color = ${colors.grey}
 
 modules-right = battery volume clock
 modules-center = bspwm
-modules-left = spotify
 wm-restack = bspwm
 
 tray-position = right
@@ -74,12 +73,4 @@ label-muted-foreground = #66
 ramp-volume-0 = 
 ramp-volume-1 = 
 ramp-volume-2 = 
-ramp-volume-3 = 
-
-[module/spotify]
-type = custom/script
-exec = ~/.config/polybar/scripts/spotify.sh --song
-interval = 2
-click-left = ~/.config/polybar/scripts/spotify.sh play-pause
-click-right = ~/.config/polybar/scripts/spotify.sh next
-click-middle = ~/.config/polybar/scripts/spotify.sh previous
+Ramp-volume-3 = 
