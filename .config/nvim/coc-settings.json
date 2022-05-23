@@ -1,5 +1,0 @@
-{
-    "coc.preferences.jumpCommand": "drop",
-    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
-    "java.errors.incompleteClasspath.severity": "ignore"
-}

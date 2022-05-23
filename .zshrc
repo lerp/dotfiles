@@ -2,7 +2,7 @@ HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
-export ZSH="/home/james/.oh-my-zsh"
+export ZSH="${HOME}/.oh-my-zsh"
 export VISUAL=nvim
 export EDITOR=nvim
 
@@ -29,9 +29,8 @@ source /usr/share/fzf/key-bindings.zsh
 alias sudo="sudo -E"
 alias config="git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 alias gdb="gdb -q"
+alias make="make -j$(nproc)"
 
 bindkey '^S' insert-sudo
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 eval $(thefuck --alias)

@@ -1,118 +1,316 @@
-" PLUGINS {{{
-
 " PLUGGED {{{
 
 silent! if plug#begin('~/.config/nvim/plugged')
-
-    Plug 'google/vim-codefmt'
-    Plug 'google/vim-maktaba'
-    Plug 'itchyny/lightline.vim'
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-    Plug 'junegunn/fzf.vim'
-    Plug 'lervag/vimtex'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'hsanson/vim-android'
+    Plug 'numToStr/Comment.nvim'
+    Plug 'nvim-lualine/lualine.nvim'
+    Plug 'nvim-treesitter/nvim-treesitter'
+    Plug 'phaazon/hop.nvim'
+    Plug 'puremourning/vimspector'
     Plug 'roxma/nvim-yarp'
+    Plug 'rubberduck203/aosp-vim'
     Plug 'szw/vim-maximizer'
-    Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-eunuch'
     Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
     Plug 'vim-scripts/vim-gradle'
     Plug 'w0ng/vim-hybrid'
+
+    Plug 'williamboman/nvim-lsp-installer', {'branch': 'main'}
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'jose-elias-alvarez/null-ls.nvim', {'branch': 'main'}
+
+    Plug 'hrsh7th/cmp-nvim-lsp-signature-help', {'branch': 'main'}
+    Plug 'hrsh7th/cmp-nvim-lsp', {'branch': 'main'}
+    Plug 'hrsh7th/cmp-buffer', {'branch': 'main'}
+    Plug 'hrsh7th/cmp-path', {'branch': 'main'}
+    Plug 'hrsh7th/cmp-cmdline', {'branch': 'main'}
+    Plug 'hrsh7th/nvim-cmp', {'branch': 'main'}
+
+    Plug 'hrsh7th/cmp-vsnip', {'branch': 'main'}
+    Plug 'hrsh7th/vim-vsnip'
+
+    Plug 'nvim-treesitter/nvim-treesitter'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim'
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'branch': 'main', 'do': 'make' }
+    Plug 'kelly-lin/telescope-ag', {'branch': 'main'}
+
+    " Language packs
+    Plug 'tikhomirov/vim-glsl'
+    Plug 'pboettch/vim-cmake-syntax'
+    Plug 'digitaltoad/vim-pug'
 
     call plug#end()
 endif
 
 " }}}
 
+" Set the leader key
+let mapleader = " "
+let maplocalleader = " "
+
 " vim-hybrid {{{
 set background=dark
 silent! colorscheme hybrid
+highlight! Search guibg=NONE guifg=green
 " }}}
-" lightline.vim {{{
-set noshowmode
-let g:lightline = {
-    \ 'colorscheme': 'wombat',
-    \ 'active': {
-    \   'left': [
-    \      [ 'mode', 'paste' ],
-    \      [ 'git', 'cocstatus', 'readonly', 'filename', 'modified' ]
-    \   ],
-    \   'right': [
-    \      [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
-    \      [ 'blame' ]
-    \   ],
-    \ },
-    \ 'component_function': {
-    \   'cocstatus': 'coc#status',
-    \   'blame': 'LightlineGitBlame'
-    \ },
-\ }
+" nvim-cmp {{{
+set completeopt=menu,menuone,noselect
 
-augroup coc_lightline
-    autocmd!
-    autocmd User CocStatusChange, CocDiagnosticChange call lightline#update()
-augroup end
+lua <<EOF
+  local has_words_before = function()
+      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+      return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  end
 
-function! LightlightGitBlame() abort
-    let blame = get(b:, 'coc_git_blame', '')
-    return winwidth(0) > 120 ? blame : ''
-endfunction
+  local feedkey = function(key, mode)
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+  end
 
+  local cmp = require('cmp')
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body)
+      end,
+    },
+    formatting = {
+      format = function(entry, vim_item)
+        vim_item.abbr = string.sub(vim_item.abbr, 1, 80)
+        return vim_item
+      end
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif vim.fn["vsnip#available"](1) == 1 then
+            feedkey("<Plug>(vsnip-expand-or-jump)", "")
+          elseif has_words_before() then
+            cmp.complete()
+          else
+            fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+          end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function()
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+            feedkey("<Plug>(vsnip-jump-prev)", "")
+          end
+        end, { "i", "s" }),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp_signature_help' },
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' },
+    }, {
+      { name = 'buffer' },
+    }),
+    view = {
+      entries = {name = 'custom', selection_order = 'near_cursor' }
+    },
+  })
+EOF
+" gray
+highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
+" blue
+highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6
+highlight! CmpItemAbbrMatchFuzzy guibg=NONE guifg=#569CD6
+" light blue
+highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE
+highlight! CmpItemKindInterface guibg=NONE guifg=#9CDCFE
+highlight! CmpItemKindText guibg=NONE guifg=#9CDCFE
+" pink
+highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0
+highlight! CmpItemKindMethod guibg=NONE guifg=#C586C0
+" front
+highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
+highlight! CmpItemKindProperty guibg=NONE guifg=#D4D4D4
+highlight! CmpItemKindUnit guibg=NONE guifg=#D4D4D4
 " }}}
-" coc.nvim {{{
-" Enable tabbing through popup menu
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : 
-                    \ <SID>check_back_space() ? "\<Tab>" :
-                    \ coc#refresh()
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+" lsp {{{
+lua <<EOF
+  require("nvim-lsp-installer").setup {}
 
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col -1] =~# '\s'
-endfunction
+  local lspconfig = require('lspconfig')
+  local opts = { noremap=true, silent=true }
 
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <silent> <leader>rn <Plug>(coc-rename)
-nmap <silent> <leader>d :CocList diagnostics<CR>
-nmap <silent> gh :CocCommand clangd.switchSourceHeader<CR>
-" imap <silent> <C-l> <Plug>(coc-snippets-expand)
-" imap <silent> <C-j> <Plug>(coc-snippets-expand-jump)
-" vmap <silent> <C-j> <Plug>(coc-snippets-select)
+  vim.diagnostic.config {
+    virtual_text = false
+  }
 
-" noinsert: prevent automatic text injection
-" menuone: Shows the popup menu even if there's only one match
-" noselect: prevents automatic selection
-set completeopt=noinsert,menuone,noselect
+  vim.api.nvim_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  vim.api.nvim_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+
+  local on_attach = function(client, bufnr)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+
+    if client.supports_method("textDocument/formatting") then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.formatting_sync()
+        end,
+      })
+    end
+  end
+
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+  lspconfig.clangd.setup {
+    cmd = { "clangd", "--clang-tidy" },
+    capabilities = capabilities,
+    on_attach = function(client, bufnr)
+      vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gh', '<cmd>ClangdSwitchSourceHeader<CR>', opts)
+
+      on_attach(client, bufnr)
+    end,
+    flags = { 
+      debounce_text_changes = 150, 
+    },
+    offsetEncodings = 'utf-8'
+  }
+
+  lspconfig.java_language_server.setup {
+    cmd = { "/usr/share/java/java-language-server/lang_server_linux.sh", },
+    capabilities = capabilities,
+    on_attach = on_attach,
+  }
+
+  lspconfig.pyright.setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
+  }
+
+  local null_ls = require('null-ls')
+
+  null_ls.setup {
+    sources = {
+      null_ls.builtins.diagnostics.codespell,
+      -- null_ls.builtins.formatting.google_java_format,
+    },
+  }
+EOF
+
 set updatetime=300
 
-highlight CocUnderline cterm=undercurl
-highlight CocErrorHighlight ctermfg=red cterm=underline guifg=red gui=undercurl
-highlight CocWarningHighlight ctermfg=yellow guifg=yellow cterm=underline guifg=yellow gui=undercurl
-
-augroup coc_actions
+augroup lsp_actions
     autocmd!
-    autocmd CursorHold * silent call CocActionAsync('highlight')
-    autocmd CursorHold * silent call CocActionAsync('showSignatureHelp')
+    autocmd CursorHold * silent lua vim.lsp.diagnostic.show_position_diagnostics()
 augroup end
 
 " }}}
-" fzf {{{
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
-nnoremap <C-P> :FZF<CR>
+" lualine {{{
+lua <<EOF
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'wombat',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {},
+    always_divide_middle = true,
+    globalstatus = false,
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  extensions = {}
+}
+EOF
 " }}}
-" vim-codefmt {{{
-nnoremap <silent> == :FormatLines<CR>
-vnoremap <silent> = :FormatLines<CR>
-nnoremap <silent> <leader>fc :FormatCode<CR>
+" telescope {{{
+lua <<EOF
+    local actions = require("telescope.actions")
+    local telescope = require("telescope")
 
-augroup codefmt_actions
-    autocmd!
-    autocmd FileType h,c,cpp,py silent :AutoFormatBuffer
-augroup end
+    telescope.setup {
+      defaults = {
+        mappings = {
+          i = {
+            ["<ESC>"] = actions.close,
+          },
+        },
+      },
+      extensions = {
+        fzf = {
+          fuzzy = true,
+          override_generic_sorter = true,
+          override_file_sorter = true,
+          case_mode = "smart_case",
+        }
+      },
+    }
+
+    telescope.load_extension("fzf")
+    telescope.load_extension("ag")
+EOF
+
+nnoremap <silent> <C-P> <cmd>Telescope find_files<CR>
+nnoremap <silent> <leader>b <cmd>Telescope buffers<CR>
+nnoremap <silent> gr <cmd>Telescope lsp_references<CR>
+nnoremap <silent> <leader>v <cmd>Telescope lsp_document_symbols<CR>
+nnoremap <silent> <leader>d <cmd>Telescope diagnostics bufnr=0<CR>
+nnoremap <silent> <leader>D <cmd>Telescope diagnostics<CR>
+" }}}
+" editorconfig {{{
+let g:EditorConfig_exclude_patterns = ['fugitive://.*']
+" }}}
+" {{{ vim-android
+let g:android_sdk_path = expand("$HOME/android-sdk")
+let g:gradle_loclist_show = 0
+let g:gradle_show_signs = 0
+" }}}
+" {{{ hop.nvim
+lua require'hop'.setup()
+
+nnoremap <silent> <leader>j :HopWord<CR>
+" }}}
+" vimspector {{{
+let g:vimspector_enable_mappings = 'HUMAN'
+
+nmap <leader>db <Plug>VimspectorBreakpoints
+nmap <Leader>di <Plug>VimspectorBalloonEval
+" }}}
+" Misc {{{
+lua <<EOF
+  require('Comment').setup{}
+EOF
 " }}}
 
 " }}}
@@ -144,10 +342,6 @@ set fillchars=
 " Makes tab completion like bash's
 set wildmode=list:longest
 set wildignore+=*.sw?   " Ignore swp files
-
-" Set the leader key
-let mapleader = " "
-let maplocalleader = " "
 
 " Change indent settings
 set shiftwidth=4 softtabstop=4 tabstop=4 expandtab
@@ -193,7 +387,7 @@ set colorcolumn=+1
 " Ignore case when doing searches
 set smartcase
 
-" Preceed each line with it's line number
+" Precede each line with it's line number
 set number
 
 " Don't automatically change to the working directory to the file's directory
@@ -208,6 +402,10 @@ set showbreak=↪
 
 " Disable annoying beeping
 set noerrorbells
+
+set matchpairs+=<:>
+
+set spelllang=en_gb
 
 " }}}
 " MAPPINGS {{{
@@ -321,7 +519,7 @@ command! Q q
 " }}}
 " CUSTOM FUNCTIONS {{{
 
-" Make all parent directorys and save the file
+" Make all parent directories and save the file
 function! DirectorySave()
     call mkdir(expand('%:h'), 'p')
     write
@@ -346,7 +544,7 @@ augroup FileCommands
 augroup END
 
 let s:session_loaded = 1
-let s:session_path = "~/.config/nvim/lastsession.vim"
+let s:session_root = $HOME . "/.config/nvim/sessions/"
 
 augroup autosession
   " load last session on start
@@ -355,9 +553,13 @@ augroup autosession
   autocmd VimLeavePre * call s:session_vim_leave()
 augroup END
 
+function! s:session_get_instance()
+    return s:session_root . fnamemodify(getcwd(), ":t") . ".vim"
+endfunction
+
 function! s:session_vim_enter()
     if bufnr('$') == 1 && bufname('%') == '' && !&mod && getline(1, '$') == ['']
-        execute 'silent source ' . s:session_path
+        execute 'silent source ' . s:session_get_instance()
     else
       let s:session_loaded = 0
     endif
@@ -366,10 +568,13 @@ endfunction
 function! s:session_vim_leave()
   if s:session_loaded == 1
     let sessionoptions = &sessionoptions
+
     try
         set sessionoptions-=options
         set sessionoptions+=tabpages
-        execute 'mksession! ' . s:session_path
+        let session_path=s:session_get_instance()
+        call mkdir(fnamemodify(session_path, ":h"), "p")
+        execute 'mksession! ' . session_path
     finally
         let &sessionoptions = sessionoptions
     endtry
@@ -420,6 +625,8 @@ augroup filetype_cpp
 
     " Insert the Cpp Guard whenever a header file is opened
     autocmd BufNewFile *.h,*.hpp call CppGuard()
+
+    nnoremap <leader>ets vi{:s/\v(case )(.*::)?(.*):/& return "\3";<CR>
 augroup END
 
 " }}}
@@ -451,7 +658,7 @@ augroup END
 " }}}
 
 " {{{ CMake
-"
+
 function! SetupCmakeEnvironment()
     setlocal noexpandtab
 endfunction
@@ -460,6 +667,20 @@ augroup filetype_txt
     autocmd!
 
     autocmd FileType cmake call SetupCmakeEnvironment()
+augroup END
+
+" }}}
+
+" {{{ Python
+
+function! SetupPythonEnvironment()
+    setlocal textwidth=80
+endfunction
+
+augroup filetype_python
+    autocmd!
+
+    autocmd FileType python call SetupPythonEnvironment()
 augroup END
 
 " }}}

@@ -12,14 +12,21 @@
 	untracked = ls-files --others --exclude-standard
 	conflicts = diff --name-only --diff-filter=U
 [diff]
-	tool = nvimdiff
-[difftool "nvimdiff"]
-	cmd = nvim -d $LOCAL $REMOTE
+	tool = smerge
 [merge]
-	tool = nvimdiff
-[mergetool "nvimdiff"]
-	cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+	tool = smerge
 [submodule]
 	recurse = true
 [color "diff"]
 	whitespace = red reverse
+[init]
+	templatedir = /home/james/.git
+[pull]
+	ff = only
+[color]
+	ui = auto
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
