@@ -8,6 +8,7 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'nvim-treesitter/nvim-treesitter'
     Plug 'phaazon/hop.nvim'
     Plug 'puremourning/vimspector'
+    Plug 'rmagatti/auto-session', {'branch': 'main'}
     Plug 'roxma/nvim-yarp'
     Plug 'rubberduck203/aosp-vim'
     Plug 'szw/vim-maximizer'
@@ -42,6 +43,8 @@ silent! if plug#begin('~/.config/nvim/plugged')
     Plug 'tikhomirov/vim-glsl'
     Plug 'pboettch/vim-cmake-syntax'
     Plug 'digitaltoad/vim-pug'
+
+    Plug '~/workspace/android.nvim'
 
     call plug#end()
 endif
@@ -159,7 +162,6 @@ lua <<EOF
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
 
@@ -203,11 +205,35 @@ lua <<EOF
     on_attach = on_attach,
   }
 
+  lspconfig.sumneko_lua.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+      Lua = {
+        runtime = {
+          version = 'LuaJIT',
+          path = vim.split(package.path, ";"),
+        },
+        diagnostics = {
+          globals = { 'vim' },
+        },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file('', true),
+          checkThirdParty = false,
+        },
+        telemetry = {
+          enable = false,
+        },
+      },
+    },
+  }
+
   local null_ls = require('null-ls')
 
   null_ls.setup {
     sources = {
       null_ls.builtins.diagnostics.codespell,
+      -- null_ls.builtins.diagnostics.selene,
       -- null_ls.builtins.formatting.google_java_format,
     },
   }
@@ -217,7 +243,7 @@ set updatetime=300
 
 augroup lsp_actions
     autocmd!
-    autocmd CursorHold * silent lua vim.lsp.diagnostic.show_position_diagnostics()
+    autocmd CursorHold * silent lua vim.diagnostic.open_float(nil, {underline=false, focus=false})
 augroup end
 
 " }}}
@@ -266,6 +292,10 @@ lua <<EOF
             ["<ESC>"] = actions.close,
           },
         },
+        file_ignore_patterns = {
+            "build.*/.*",
+            "env.*/.*",
+        },
       },
       extensions = {
         fzf = {
@@ -297,7 +327,7 @@ let g:gradle_loclist_show = 0
 let g:gradle_show_signs = 0
 " }}}
 " {{{ hop.nvim
-lua require'hop'.setup()
+lua require('hop').setup()
 
 nnoremap <silent> <leader>j :HopWord<CR>
 " }}}
@@ -310,6 +340,10 @@ nmap <Leader>di <Plug>VimspectorBalloonEval
 " Misc {{{
 lua <<EOF
   require('Comment').setup{}
+  require('auto-session').setup {
+      log_level = 'info',
+      auto_session_suppress_dirs = {'~/', '~/workspace'}
+  }
 EOF
 " }}}
 
@@ -542,44 +576,6 @@ augroup FileCommands
     " Save whenever focus is lost
     autocmd BufLeave,FocusLost * silent! wall
 augroup END
-
-let s:session_loaded = 1
-let s:session_root = $HOME . "/.config/nvim/sessions/"
-
-augroup autosession
-  " load last session on start
-  " Note: without 'nested' filetypes are not restored.
-  autocmd VimEnter * nested call s:session_vim_enter()
-  autocmd VimLeavePre * call s:session_vim_leave()
-augroup END
-
-function! s:session_get_instance()
-    return s:session_root . fnamemodify(getcwd(), ":t") . ".vim"
-endfunction
-
-function! s:session_vim_enter()
-    if bufnr('$') == 1 && bufname('%') == '' && !&mod && getline(1, '$') == ['']
-        execute 'silent source ' . s:session_get_instance()
-    else
-      let s:session_loaded = 0
-    endif
-endfunction
-
-function! s:session_vim_leave()
-  if s:session_loaded == 1
-    let sessionoptions = &sessionoptions
-
-    try
-        set sessionoptions-=options
-        set sessionoptions+=tabpages
-        let session_path=s:session_get_instance()
-        call mkdir(fnamemodify(session_path, ":h"), "p")
-        execute 'mksession! ' . session_path
-    finally
-        let &sessionoptions = sessionoptions
-    endtry
-  endif
-endfunction
 
 " }}}
 " LANGUAGE SETTINGS {{{

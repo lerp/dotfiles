@@ -17,6 +17,6 @@ export GREY=#282a2e
 export LIGHT_GREY=#5F5F5F
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 export MONITOR=DP-0
-export ANDROID_HOME=${HOME}/android-sdk/
+export ANDROID_HOME=${HOME}/android-sdk
 export ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/21.3.6528147
 export LCEVC_TEST_ASSETS=/home/james/assets/test_input/
