@@ -21,13 +21,25 @@ return require('packer').startup(function(use)
   use 'tpope/vim-surround'
   use 'tpope/vim-unimpaired'
   use 'vim-scripts/vim-gradle'
+  use 'b0o/mapx.nvim'
+
+  use {
+    'lervag/vimtex',
+    config = function()
+      vim.g.vimtex_view_method = 'mupdf'
+    end
+  }
 
   -- use '~/workspace/android.nvim/'
-
   use {
     'w0ng/vim-hybrid',
     config = [[require('config.hybrid')]]
   }
+
+  -- use {
+  --   'norcalli/nvim-colorizer.lua',
+  --   config = function() require('colorizer').setup() end,
+  -- }
 
   use {
     'kyazdani42/nvim-web-devicons',
@@ -132,7 +144,15 @@ return require('packer').startup(function(use)
     config = [[require('config.null-ls')]],
   }
 
-  use 'mfussenegger/nvim-dap'
+  use {
+    'rcarriga/nvim-dap-ui',
+    requires = {
+      'mfussenegger/nvim-dap',
+      { 'theHamsta/nvim-dap-virtual-text', after = "nvim-dap" }
+    },
+    config = [[require('config.dap')]],
+    after = 'vim-hybrid',
+  }
 
   if packer_bootstrap then
     require('packer').sync()

@@ -60,4 +60,18 @@ function M.append_options(options)
   end
 end
 
+function M.set_signs(signs)
+  for sign, text in pairs(signs) do
+    vim.fn.sign_define(sign, { texthl = sign, numhl = sign, text = text })
+  end
+end
+
+function M.highlight(highlights)
+  for group, properties in pairs(highlights) do
+    -- local cmd = table.concat({ "highlight", group, bg, fg, style, }, " ")
+
+    vim.api.nvim_set_hl(0, group, properties)
+  end
+end
+
 return M

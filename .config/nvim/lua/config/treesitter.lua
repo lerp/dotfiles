@@ -1,19 +1,16 @@
-require("nvim-treesitter.configs").setup {
-  ensure_installed = { "c", "cpp", "lua", },
+require('nvim-treesitter.configs').setup {
+  ensure_installed = { 'c', 'cpp', 'lua', 'comment', },
   sync_install = false,
   highlight = {
     enable = true,
-    disable = { "c", "cpp", "java" }
+    additional_vim_regex_highlighting = true,
+    disable = { 'c', 'cpp', 'java' },
   },
   playground = {
     enable = true,
   }
 }
 
-vim.cmd [[
-  set foldmethod=expr
-  set foldlevelstart=99
-  set foldexpr=nvim_treesitter#foldexpr()
-
-  highlight! cmakeTSVariable guifg=#81A2BE
-]]
+-- require "nvim-treesitter.highlight".set_custom_captures {
+--   ["constant.nullptr"] = "number",
+-- }

@@ -1,10 +1,13 @@
 local function has_words_before()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  return col ~= 0 and
+      vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s")
+      == nil
 end
 
 local function feedkey(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true),
+    mode, true)
 end
 
 local cmp = require('cmp')
@@ -16,7 +19,7 @@ cmp.setup {
     end,
   },
   formatting = {
-    format = function(entry, vim_item)
+    format = function(_, vim_item)
       vim_item.abbr = string.sub(vim_item.abbr, 1, 80)
       return vim_item
     end
@@ -50,12 +53,13 @@ cmp.setup {
   sources = cmp.config.sources({
     { name = 'nvim_lsp_signature_help' },
     { name = 'nvim_lsp' },
+    { name = 'path' },
     { name = 'vsnip' },
   }, {
     { name = 'buffer' },
   }),
   view = {
-    entries = {name = 'custom', selection_order = 'near_cursor' }
+    entries = { name = 'custom', selection_order = 'near_cursor' }
   },
 }
 
