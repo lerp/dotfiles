@@ -1,9 +1,8 @@
 local dap = require('dap')
 local dapui = require('dapui')
-local dapvt = require("nvim-dap-virtual-text")
+-- local dapvt = require("nvim-dap-virtual-text")
 local util = require('util')
 local m = require('mapx')
-local create_hl = vim.api.nvim_set_hl
 
 util.set_signs {
   DapBreakpoint = '',
@@ -71,7 +70,7 @@ dapui.setup {
   },
 }
 
-dapvt.setup {}
+-- dapvt.setup {}
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
   dapui.open()

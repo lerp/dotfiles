@@ -99,6 +99,7 @@ vmap('?', [[?\v\c]])
 -- Misc
 nmap('<leader>s', 'ea<C-X><C-S>') -- Spellcheck
 nmap('<leader>cw', [[mz<cmd>%s/\s\+$//<cr><cmd>let @/=''<cr>`z]]) -- Clear trailing whitespace
+vmap('<leader>stt', '<cmd>s/    /\t/g<cr>')
 map({ 'n', 'v', 'i' }, '<C-S>', '<cmd>w<cr>') -- Save
 
 req('plugins')
@@ -116,6 +117,8 @@ vim.cmd [[
   inoreabbrev namesapce namespace
   inoreabbrev tempalte template
   inoreabbrev vnvoa vnova
+  inoreabbrev tpyename typename
+  inoreabbrev pubilc public
 ]]
 
 vim.cmd [[

@@ -46,4 +46,4 @@ super + l
     slimlock
 
 Print
-    scrot -s
+    scrot

@@ -4,6 +4,8 @@ if test ! -z "${PATH##*$USER_SCRIPTS*}"; then
     export PATH=$PATH:$USER_SCRIPTS
 fi
 
+export PATH="$PATH:$HOME/.dotnet/tools:$HOME/.local/bin/"
+
 export BLACK=#1c1c1c
 export WHITE=#c5c8c6
 export RED=#cc6666

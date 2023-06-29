@@ -12,9 +12,9 @@ vim.diagnostic.config {
   float = {
     border = 'single',
     format = function(diagnostic)
-      if diagnostic.code ~= nil then
-        return string.format('%s [%s]', diagnostic.message, diagnostic.code)
-      end
+      -- if diagnostic.code ~= nil then
+      --   return string.format('%s [%s]', diagnostic.message, diagnostic.code)
+      -- end
 
       return diagnostic.message
     end,
@@ -32,17 +32,31 @@ local function on_attach(client, bufnr)
   buf_nmap(bufnr, '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
   buf_nmap(bufnr, '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 
+  vim.api.nvim_create_augroup('lsp_actions', {
+    clear = true
+  })
+  vim.api.nvim_create_autocmd('CursorHold', {
+    group = 'lsp_actions',
+    callback = function(ev)
+      ret = vim.diagnostic.open_float(nul, {underline=false, focus=false})
+
+      if ret == nil then
+        vim.lsp.buf.hover()
+      end
+    end
+  })
+
   if client.supports_method('textDocument/formatting') then
     vim.api.nvim_create_autocmd('BufWritePre', {
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.formatting_sync()
+        vim.lsp.buf.format({ bufnr = bufnr })
       end,
     })
   end
 end
 
-vim.lsp.set_log_level('debug')
+vim.lsp.set_log_level('off')
 
 util.set_signs {
   DiagnosticSignError = '',
@@ -89,23 +103,23 @@ lspconfig.java_language_server.setup {
 lspconfig.pyright.setup {
   capabilities = capabilities,
   on_attach = on_attach,
+  settings = {
+  }
 }
 
-lspconfig.sumneko_lua.setup {
+lspconfig.lua_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
     Lua = {
       runtime = {
         version = 'LuaJIT',
-        path = vim.split(package.path, ';'),
       },
       diagnostics = {
         globals = { 'vim' },
       },
       workspace = {
         library = vim.api.nvim_get_runtime_file('', true),
-        checkThirdParty = false,
       },
       telemetry = {
         enable = false,
@@ -114,9 +128,10 @@ lspconfig.sumneko_lua.setup {
   },
 }
 
-vim.cmd [[
-augroup lsp_actions
-  autocmd!
-  autocmd CursorHold * silent lua vim.diagnostic.open_float(nil, {underline=false, focus=false})
-augroup end
-]]
+lspconfig.ltex.setup{}
+lspconfig.csharp_ls.setup{}
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = "single",
+  focusable = false,
+})

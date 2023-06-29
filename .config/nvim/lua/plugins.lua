@@ -22,11 +22,18 @@ return require('packer').startup(function(use)
   use 'tpope/vim-unimpaired'
   use 'vim-scripts/vim-gradle'
   use 'b0o/mapx.nvim'
+  use 'untitled-ai/jupyter_ascending.vim'
+
+  use {
+    'subnut/nvim-ghost.nvim',
+    run = ':call nvim_ghost#installer#install()',
+  }
 
   use {
     'lervag/vimtex',
     config = function()
-      vim.g.vimtex_view_method = 'mupdf'
+      vim.g.vimtex_view_method = 'sioyek'
+      vim.g.vimtex_view_sioyek_options = '--new-window'
     end
   }
 
@@ -36,10 +43,10 @@ return require('packer').startup(function(use)
     config = [[require('config.hybrid')]]
   }
 
-  -- use {
-  --   'norcalli/nvim-colorizer.lua',
-  --   config = function() require('colorizer').setup() end,
-  -- }
+  use {
+    'norcalli/nvim-colorizer.lua',
+    config = function() require('colorizer').setup() end,
+  }
 
   use {
     'kyazdani42/nvim-web-devicons',
@@ -58,11 +65,6 @@ return require('packer').startup(function(use)
   }
 
   use {
-    'nvim-treesitter/playground',
-    requires = 'nvim-treesitter/nvim-treesitter',
-  }
-
-  use {
     'editorconfig/editorconfig-vim',
     config = [[vim.g.EditorConfig_exclude_patterns = {'fugitive://.*'}]]
   }
@@ -74,7 +76,8 @@ return require('packer').startup(function(use)
         log_level = 'info',
         auto_session_suppress_dirs = { '~/', '~/workspace' }
       }
-    end
+    end,
+    after = 'telescope.nvim'
   }
 
   use {
@@ -138,6 +141,8 @@ return require('packer').startup(function(use)
     config = [[require('config.lsp')]],
   }
 
+  use { 'Issafalcon/lsp-overloads.nvim'}
+
   use {
     'jose-elias-alvarez/null-ls.nvim',
     requires = 'nvim-lua/plenary.nvim',
@@ -148,7 +153,7 @@ return require('packer').startup(function(use)
     'rcarriga/nvim-dap-ui',
     requires = {
       'mfussenegger/nvim-dap',
-      { 'theHamsta/nvim-dap-virtual-text', after = "nvim-dap" }
+      -- { 'theHamsta/nvim-dap-virtual-text', after = "nvim-dap" }
     },
     config = [[require('config.dap')]],
     after = 'vim-hybrid',

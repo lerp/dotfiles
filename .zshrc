@@ -34,3 +34,5 @@ alias make="make -j$(nproc)"
 bindkey '^S' insert-sudo
 
 eval $(thefuck --alias)
+
+[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh

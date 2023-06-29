@@ -6,7 +6,7 @@ util.set_options {
 }
 
 vim.cmd [[
-  silent! colorscheme hybrid
+  colorscheme hybrid
   highlight! link NormalFloat Normal
   highlight! link TabLine Normal
   highlight! link TabLineFill SignColumn
@@ -21,6 +21,17 @@ util.highlight {
   DiffDelete = palette.diff_delete,
   DiffChange = palette.diff_change,
   DiffText = palette.diff_text,
+
+  ["@lsp.type.method"] = { fg = palette.white },
+  ["@lsp.type.function"] = { fg = palette.white },
+  ["@lsp.type.parameter"] = { fg = palette.white },
+  ["@lsp.type.property"] = { fg = palette.white },
+  ["@lsp.type.variable"] = { fg = palette.white },
+  ["@lsp.type.namespace"] = { fg = palette.white },
+  ["@lsp.type.class"] = { fg = palette.white },
+  ["@lsp.type.typeParameter"] = { fg = palette.purple },
+
+  ["@lsp.mod.deduced"] = { fg = palette.orange },
 
   -- Treesitter
   TSComment = { fg = palette.gray },

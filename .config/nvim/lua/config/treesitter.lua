@@ -1,5 +1,5 @@
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { 'c', 'cpp', 'lua', 'comment', },
+  ensure_installed = { 'c', 'cpp', 'lua', 'comment', 'markdown' },
   sync_install = false,
   highlight = {
     enable = true,
