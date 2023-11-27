@@ -65,6 +65,14 @@ return require('packer').startup(function(use)
   }
 
   use {
+    'nvim-treesitter/nvim-treesitter-context',
+    requires = {
+      'nvim-treesitter/nvim-treesitter'
+    },
+    config = function () require('treesitter-context').setup() end,
+  }
+
+  use {
     'editorconfig/editorconfig-vim',
     config = [[vim.g.EditorConfig_exclude_patterns = {'fugitive://.*'}]]
   }
@@ -123,7 +131,6 @@ return require('packer').startup(function(use)
     requires = {
       'hrsh7th/vim-vsnip',
       'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-nvim-lsp-signature-help',
       { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
       { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' },
       { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
@@ -141,13 +148,13 @@ return require('packer').startup(function(use)
     config = [[require('config.lsp')]],
   }
 
-  use { 'Issafalcon/lsp-overloads.nvim'}
-
   use {
     'jose-elias-alvarez/null-ls.nvim',
     requires = 'nvim-lua/plenary.nvim',
     config = [[require('config.null-ls')]],
   }
+
+  use { 'Issafalcon/lsp-overloads.nvim' }
 
   use {
     'rcarriga/nvim-dap-ui',
@@ -157,6 +164,15 @@ return require('packer').startup(function(use)
     },
     config = [[require('config.dap')]],
     after = 'vim-hybrid',
+  }
+
+  use {
+    "Fildo7525/pretty_hover",
+    config = function()
+      require("pretty_hover").setup{
+        border = "single",
+      }
+    end
   }
 
   if packer_bootstrap then

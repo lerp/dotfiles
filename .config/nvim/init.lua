@@ -22,6 +22,7 @@ util.set_options {
   list = true,
   listchars = [[tab:▸ ,eol:¬,trail:⋅,extends:❯,precedes:❮]],
   mouse = 'a',
+  mousemodel = '',
   number = true,
   relativenumber = true,
   scrolloff = 3,
@@ -56,6 +57,15 @@ local vmap = util.vmap
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+
+-- custom global options
+vim.api.nvim_create_user_command('FormatEnable', function()
+  vim.b.formatting_enabled = true
+end, {bang = true})
+
+vim.api.nvim_create_user_command('FormatDisable', function()
+  vim.b.formatting_enabled = false
+end, {bang = true})
 
 -- init.lua
 nmap('<leader>rv', '<cmd>lua dofile(vim.env.MYVIMRC)<cr>')

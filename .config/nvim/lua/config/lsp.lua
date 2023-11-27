@@ -5,17 +5,14 @@ local util = require('util')
 local nmap = util.nmap
 local buf_nmap = util.buf_nmap
 
-vim.lsp.set_log_level('debug')
+vim.lsp.set_log_level('off')
+
 vim.diagnostic.config {
   virtual_text = false,
   signs = true,
   float = {
     border = 'single',
     format = function(diagnostic)
-      -- if diagnostic.code ~= nil then
-      --   return string.format('%s [%s]', diagnostic.message, diagnostic.code)
-      -- end
-
       return diagnostic.message
     end,
   },
@@ -31,32 +28,44 @@ local function on_attach(client, bufnr)
   buf_nmap(bufnr, 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
   buf_nmap(bufnr, '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
   buf_nmap(bufnr, '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+  buf_nmap(bufnr, '<leader>i', '<cmd>lua require("pretty_hover").hover()<CR>')
 
-  vim.api.nvim_create_augroup('lsp_actions', {
-    clear = true
-  })
+  vim.api.nvim_create_augroup('lsp_actions', {})
+
   vim.api.nvim_create_autocmd('CursorHold', {
     group = 'lsp_actions',
     callback = function(ev)
-      ret = vim.diagnostic.open_float(nul, {underline=false, focus=false})
-
-      if ret == nil then
-        vim.lsp.buf.hover()
+      if ev.buf ~= bufnr then
+        return
       end
+
+      vim.diagnostic.open_float(nul, {underline=false, focus=false})
     end
   })
+
+  if client.server_capabilities.signatureHelpProvider then
+    require('lsp-overloads').setup(client, {
+        ui = {
+          border = "single",
+          focusable = false,
+          floating_window_above_cur_line = false,
+          max_height = 20,
+        },
+        display_automatically = true
+      })
+  end
 
   if client.supports_method('textDocument/formatting') then
     vim.api.nvim_create_autocmd('BufWritePre', {
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.format({ bufnr = bufnr })
+        if vim.b.formatting_enabled == nil or vim.b.formatting_enabled then
+          vim.lsp.buf.format({ bufnr = bufnr })
+        end
       end,
     })
   end
 end
-
-vim.lsp.set_log_level('off')
 
 util.set_signs {
   DiagnosticSignError = '',
@@ -76,6 +85,7 @@ lspconfig.clangd.setup {
     '--cross-file-rename',
     '--header-insertion=iwyu',
     '--log=verbose',
+    '--offset-encoding=utf-16',
   },
   capabilities = capabilities,
   on_attach = function(client, bufnr)

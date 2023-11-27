@@ -6,14 +6,16 @@ null_ls.setup {
       vim.api.nvim_create_autocmd('BufWritePre', {
         buffer = bufnr,
         callback = function()
-          vim.lsp.buf.format({ bufnr = bufnr })
+          if vim.b.formatting_enabled == nil or vim.b.formatting_enabled then
+            vim.lsp.buf.format({ bufnr = bufnr })
+          end
         end,
       })
     end
   end,
 
   sources = {
-    null_ls.builtins.diagnostics.codespell,
+    null_ls.builtins.diagnostics.cspell,
     null_ls.builtins.formatting.google_java_format.with({
       extra_args = { "--aosp" },
     }),
